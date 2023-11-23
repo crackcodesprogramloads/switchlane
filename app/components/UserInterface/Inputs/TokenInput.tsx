@@ -32,14 +32,14 @@ export default function TokenInput({
             xmlns="http://www.w3.org/2000/svg"
             width="1.4em"
             height="1.4em"
-            shape-rendering="geometricPrecision"
-            text-rendering="geometricPrecision"
-            image-rendering="optimizeQuality"
-            fill-rule="evenodd"
-            clip-rule="evenodd"
+            shapeRendering="geometricPrecision"
+            textRendering="geometricPrecision"
+            imageRendering="optimizeQuality"
+            fillRule="evenodd"
+            clipRule="evenodd"
             viewBox="0 0 784.37 1277.39"
           >
-            <g fill-rule="nonzero">
+            <g fillRule="nonzero">
               <path
                 fill="#343434"
                 d="m392.07 0-8.57 29.11v844.63l8.57 8.55 392.06-231.75z"

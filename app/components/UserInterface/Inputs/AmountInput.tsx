@@ -22,7 +22,7 @@ export default function AmountInput({
           type="number"
           id={button ? "amount" : "receive-amount"}
           name={button ? "amount" : "receive-amount"}
-          className="w-2/3 h-full outline-none text-4xl text-end bg-transparent"
+          className="w-full h-full outline-none text-4xl text-end bg-transparent"
           placeholder="0.00"
         />
       </span>
