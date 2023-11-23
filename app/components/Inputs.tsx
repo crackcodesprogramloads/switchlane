@@ -114,13 +114,11 @@ export function AddressInput({ placeholder }: { placeholder: string }) {
     setChecked((prevState) => !prevState);
   }
   return (
-    <fieldset className="py-2 px-4 w-full text-zinc-200 border-l border-t border-gray-600 rounded-lg shadow-[5px_5px_50px] shadow-sky-700/70">
+    <fieldset className="py-2 px-1 w-[70%] text-zinc-200 border-l border-t border-gray-600 rounded-lg shadow-[5px_5px_60px] shadow-sky-700/70">
       <span className="h-10 container flex flex-row items-center justify-center gap-2">
         <label
           htmlFor="checkbox"
-          className={`${
-            !checked && "w-max"
-          } container flex flex-row items-center gap-2`}
+          className="w-max container flex flex-row items-center gap-2"
         >
           <input
             type="checkbox"
@@ -130,14 +128,14 @@ export function AddressInput({ placeholder }: { placeholder: string }) {
             checked={checked}
             onChange={handleCheckbox}
           />
-          {checked ? "Send funds to my address" : "Address:"}
+          {checked ? "Send funds to my address" : ""}
         </label>
         {!checked && (
           <input
             type="address"
             id="address"
             name="address"
-            className="w-full mx-4 outline-none border-dashed border-b text-center text-lg bg-transparent"
+            className="w-[90%] outline-none border-dashed border-b text-center text-md bg-transparent"
             placeholder={checked ? "" : placeholder}
           />
         )}
