@@ -9,7 +9,7 @@ export default function UserInterface() {
   return (
     <div className="relative w-[42%] h-[60%] flex flex-col items-center gap-3">
       <div className="relative w-full h-full gap-3 flex flex-col items-center">
-        <div className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 rounded-lg shadow-[5px_5px_60px] shadow-sky-700/70">
+        <div className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_60px] shadow-sky-700/70">
           <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
             <AmountInput title="Send" button={true} showBalance={true} />
             <TokenInput title="GAS" token="Eth" />
@@ -27,7 +27,7 @@ export default function UserInterface() {
           width={55}
           height={55}
         />
-        <span className="w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 rounded-lg shadow-[5px_5px_60px] shadow-sky-700/70">
+        <span className="w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_60px] shadow-sky-700/70">
           <AmountInput title="Receive" button={false} showBalance={false} />
           <NetworkInput title="Network" side="To" chain="Polygon" />
         </span>

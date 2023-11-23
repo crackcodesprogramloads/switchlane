@@ -114,7 +114,7 @@ export function AddressInput({ placeholder }: { placeholder: string }) {
     setChecked((prevState) => !prevState);
   }
   return (
-    <fieldset className="py-2 px-1 w-[70%] text-zinc-200 border-l border-t border-gray-600 rounded-lg shadow-[5px_5px_60px] shadow-sky-700/70">
+    <fieldset className="py-2 px-1 w-[70%] text-zinc-200 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_60px] shadow-sky-700/70">
       <span className="h-10 container flex flex-row items-center justify-center gap-2">
         <label
           htmlFor="checkbox"
