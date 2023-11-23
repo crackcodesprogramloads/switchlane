@@ -1,0 +1,14 @@
+<svg
+          stroke="rgb(228 228 231)"
+          fill="none"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          height="3em"
+          width="3em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polyline points="7 13 12 18 17 13"></polyline>
+          <polyline points="7 6 12 11 17 6"></polyline>
+        </svg>
