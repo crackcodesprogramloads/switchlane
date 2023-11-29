@@ -2,10 +2,16 @@ export default function AmountInput({
   title,
   button,
   showBalance,
+  value,
+  onChange,
+  readOnly,
 }: {
   title: string;
   button: boolean;
   showBalance: boolean;
+  value: number;
+  onChange?: (e: any) => void;
+  readOnly?: boolean;
 }) {
   return (
     <fieldset
@@ -24,6 +30,9 @@ export default function AmountInput({
           name={button ? "amount" : "receive-amount"}
           className="w-full h-full outline-none text-4xl text-end bg-transparent"
           placeholder="0.00"
+          value={value}
+          onChange={onChange}
+          readOnly={readOnly}
         />
       </span>
       {showBalance && (

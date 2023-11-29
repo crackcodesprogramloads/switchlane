@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
+import WagmiProvider from "./components/Navbar/Wallet/WagmiProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-950 text-zinc-200`}>
-        <Navbar />
-        {children}
+        <WagmiProvider>
+          <Navbar />
+          {children}
+        </WagmiProvider>
       </body>
     </html>
   );

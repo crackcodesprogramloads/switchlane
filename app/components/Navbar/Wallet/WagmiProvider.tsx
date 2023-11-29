@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  WagmiConfig,
-  useConnect,
-  configureChains,
-  createConfig,
-  useAccount,
-  useEnsName,
-  useEnsAvatar,
-  useDisconnect,
-} from "wagmi";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import { polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import {
@@ -18,22 +9,18 @@ import {
   lightTheme,
   darkTheme,
 } from "@rainbow-me/rainbowkit";
-import { metaMaskWallet, rainbowWallet } from "@rainbow-me/rainbowkit/wallets";
-import {
-  enhanceWalletWithAAConnector,
-  googleWallet,
-} from "@zerodev/wagmi/rainbowkit";
+import { metaMaskWallet } from "@rainbow-me/rainbowkit/wallets";
+import { enhanceWalletWithAAConnector } from "@zerodev/wagmi/rainbowkit";
 // Connector
-import { enhanceConnectorWithAA } from "@zerodev/wagmi";
 
 import "@rainbow-me/rainbowkit/styles.css";
 import { ReactNode } from "react";
 
-const zeroDevProjectId = process.env.ZERODEV_PROJECT_ID || "";
-const walletConnectProjectId = process.env.WALLET_CONNECT_ID || "";
-const alchemyProjectId = process.env.ALCHEMY_API_KEY || "";
+const zeroDevProjectId = process.env.NEXT_PUBLIC_ZERODEV_PROJECT_ID || "";
+const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || "";
+const alchemyProjectId = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "";
 
-export default function WalletWrapper({ children }: { children: ReactNode }) {
+export default function WagmiProvider({ children }: { children: ReactNode }) {
   const { chains, publicClient, webSocketPublicClient } = configureChains(
     [polygonMumbai],
     [alchemyProvider({ apiKey: alchemyProjectId })]
@@ -41,7 +28,7 @@ export default function WalletWrapper({ children }: { children: ReactNode }) {
 
   const connectors = connectorsForWallets([
     {
-      groupName: "EOA Wrapped with AA",
+      groupName: "Switchlane Smart Wallet",
       wallets: [
         enhanceWalletWithAAConnector(
           metaMaskWallet({
