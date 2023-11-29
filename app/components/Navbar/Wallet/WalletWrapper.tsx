@@ -13,7 +13,6 @@ import {
 import { polygonMumbai } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import {
-  ConnectButton,
   RainbowKitProvider,
   connectorsForWallets,
   lightTheme,
@@ -27,19 +26,12 @@ import {
 // Connector
 import { enhanceConnectorWithAA } from "@zerodev/wagmi";
 
-import Button from "./Button";
-import Image from "next/image";
-
 import "@rainbow-me/rainbowkit/styles.css";
-import CustomWalletButton from "./CustomWalletButton";
+import { ReactNode } from "react";
 
 const zeroDevProjectId = "c8211653-2f9c-47f3-90a9-b52d86c38b3b";
 
-export function Wallet() {
-  return <Button text="Connect wallet" />;
-}
-
-export default function RainbowKitExample() {
+export default function WalletWrapper({ children }: { children: ReactNode }) {
   const { chains, publicClient, webSocketPublicClient } = configureChains(
     [polygonMumbai],
     [alchemyProvider({ apiKey: "knLkQi3vCjt9NZKjQHqz_Z8PTpsS35dL" })]
@@ -88,7 +80,7 @@ export default function RainbowKitExample() {
         chains={chains}
         modalSize={"compact"}
       >
-        <CustomWalletButton />
+        {children}
       </RainbowKitProvider>
     </WagmiConfig>
   );

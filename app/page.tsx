@@ -1,6 +1,4 @@
 import UserInterface from "./components/UserInterface/UserInterface";
-import Logo from "./components/Navbar/Logo";
-import Wallet from "./components/Navbar/Wallet/Wallet";
 import Navbar from "./components/Navbar/Navbar";
 
 export default function Home() {

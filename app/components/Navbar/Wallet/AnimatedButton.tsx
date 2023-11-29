@@ -1,15 +1,18 @@
 "use client";
 
 import { m, LazyMotion, domAnimation } from "framer-motion";
+import { ReactNode } from "react";
 
-export default function Button({
-  text,
+export default function AnimatedButton({
+  children,
   width,
   onClick,
+  loading,
 }: {
-  text: string;
+  children?: ReactNode;
   width?: string;
   onClick?: () => void;
+  loading?: boolean;
 }) {
   return (
     <LazyMotion features={domAnimation}>
@@ -25,7 +28,7 @@ export default function Button({
         type="button"
         className={`${width} py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70`}
       >
-        {text}
+        {loading ? <p>loading...</p> : children}
       </m.button>
     </LazyMotion>
   );

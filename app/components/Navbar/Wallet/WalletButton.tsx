@@ -1,8 +1,10 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Button from "./Button";
-import Image from "next/image";
+"use client";
 
-export default function CustomWalletButton() {
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Image from "next/image";
+import AnimatedButton from "./AnimatedButton";
+
+export default function WalletButton() {
   return (
     <ConnectButton.Custom>
       {({
@@ -36,18 +38,24 @@ export default function CustomWalletButton() {
             {(() => {
               if (!connected) {
                 return (
-                  <Button text="Connect Wallet" onClick={openConnectModal} />
+                  <AnimatedButton onClick={openConnectModal}>
+                    Connect Wallet
+                  </AnimatedButton>
                 );
               }
               if (chain.unsupported) {
-                return <Button text="Wrong network" onClick={openChainModal} />;
+                return (
+                  <AnimatedButton onClick={openChainModal}>
+                    Wrong network
+                  </AnimatedButton>
+                );
               }
               return (
                 <div style={{ display: "flex", gap: 12 }}>
                   <button
                     onClick={openChainModal}
-                    style={{ display: "flex", alignItems: "center" }}
                     type="button"
+                    style={{ display: "flex", alignItems: "center" }}
                   >
                     {chain.hasIcon && (
                       <div
