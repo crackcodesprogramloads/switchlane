@@ -60,7 +60,7 @@ export default function Transfer() {
 
   const { data: text, refetch } = useContractRead({
     address: "0x4Eb0451A0E08441A850E74dDDd3E0e355cE6aCc1",
-    abi: contractAbi,
+    abi: ContractAbi,
     functionName: "getBalanceOfToken",
     args: ["0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1"],
     enabled: !!address,
