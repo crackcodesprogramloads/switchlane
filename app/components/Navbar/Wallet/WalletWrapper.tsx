@@ -30,7 +30,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { ReactNode } from "react";
 
 const zeroDevProjectId = process.env.ZERODEV_PROJECT_ID || "";
-const metamaskProjectId = process.env.METAMASK_WALLET_ID || "";
+const walletConnectProjectId = process.env.WALLET_CONNECT_ID || "";
 const alchemyProjectId = process.env.ALCHEMY_API_KEY || "";
 
 export default function WalletWrapper({ children }: { children: ReactNode }) {
@@ -46,7 +46,7 @@ export default function WalletWrapper({ children }: { children: ReactNode }) {
         enhanceWalletWithAAConnector(
           metaMaskWallet({
             chains,
-            projectId: metamaskProjectId,
+            projectId: walletConnectProjectId,
           }),
           { projectId: zeroDevProjectId }
         ),
