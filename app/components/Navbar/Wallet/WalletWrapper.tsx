@@ -29,12 +29,14 @@ import { enhanceConnectorWithAA } from "@zerodev/wagmi";
 import "@rainbow-me/rainbowkit/styles.css";
 import { ReactNode } from "react";
 
-const zeroDevProjectId = "c8211653-2f9c-47f3-90a9-b52d86c38b3b";
+const zeroDevProjectId = process.env.ZERODEV_PROJECT_ID || "";
+const metamaskProjectId = process.env.METAMASK_WALLET_ID || "";
+const alchemyProjectId = process.env.ALCHEMY_API_KEY || "";
 
 export default function WalletWrapper({ children }: { children: ReactNode }) {
   const { chains, publicClient, webSocketPublicClient } = configureChains(
     [polygonMumbai],
-    [alchemyProvider({ apiKey: "knLkQi3vCjt9NZKjQHqz_Z8PTpsS35dL" })]
+    [alchemyProvider({ apiKey: alchemyProjectId })]
   );
 
   const connectors = connectorsForWallets([
@@ -44,21 +46,10 @@ export default function WalletWrapper({ children }: { children: ReactNode }) {
         enhanceWalletWithAAConnector(
           metaMaskWallet({
             chains,
-            projectId: "c75647671be1d45589e737462a1ae029",
+            projectId: metamaskProjectId,
           }),
           { projectId: zeroDevProjectId }
         ),
-        // enhanceWalletWithAAConnector(
-        //   rainbowWallet({
-        //     chains,
-        //     projectId: "c75647671be1d45589e737462a1ae029",
-        //   }),
-        //   { projectId: zeroDevProjectId }
-        // ),
-        // enhanceWalletWithAAConnector(
-        //   googleWallet({ options: { projectId: zeroDevProjectId } }),
-        //   { projectId: zeroDevProjectId }
-        // ),
       ],
     },
   ]);

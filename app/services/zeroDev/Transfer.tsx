@@ -10,8 +10,9 @@ import {
   usePublicClient,
 } from "wagmi";
 import { BaseError, ContractFunctionRevertedError } from "viem";
-// import contractAbi from "./ERC20ABI.json";
-// import contractAbi from "./NEWABI.json";
+
+import ContractAbi from "../../abi/ERC20_Token_Abi.json";
+
 import AnimatedButton from "@/app/components/Navbar/Wallet/AnimatedButton";
 
 export default function Transfer() {
@@ -19,28 +20,6 @@ export default function Transfer() {
   const { chain } = useNetwork();
   const [balanceChanging, setBalanceChanging] = useState(false);
   const publicClient = usePublicClient();
-
-  // async function Test() {
-  //   try {
-  //     await publicClient.simulateContract({
-  //       address: "0x94C8d45976f908267817670345C127c5D1FBd928",
-  //       abi: contractAbi,
-  //       functionName: "receiveTokens",
-  //       args: ["0x0000000000000000000000000000000000001010", 1000000000000000], // 0.001Matic
-  //     });
-  //   } catch (err) {
-  //     if (err instanceof BaseError) {
-  //       const revertError = err.walk(
-  //         (err) => err instanceof ContractFunctionRevertedError
-  //       );
-  //       if (revertError instanceof ContractFunctionRevertedError) {
-  //         const errorName = revertError.data?.errorName ?? "";
-  //         // do something with `errorName`
-  //         console.log({ errorName });
-  //       }
-  //     }
-  //   }
-  // }
 
   // useEffect(() => {
   //   if (isConnected) {
@@ -54,8 +33,8 @@ export default function Transfer() {
     status,
   } = usePrepareContractWrite({
     address: "0x4Eb0451A0E08441A850E74dDDd3E0e355cE6aCc1",
-    abi: contractAbi,
-    functionName: "receiveTokens",
+    abi: ContractAbi,
+    functionName: "approve",
     args: [
       "0xEB6d15D599E9fcF8d7A7F42eD6FAB75C45540718",
       "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",

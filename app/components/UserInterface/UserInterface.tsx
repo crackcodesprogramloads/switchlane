@@ -8,6 +8,10 @@ import TokenInput from "./Inputs/TokenInput";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 export default function UserInterface() {
+  const handleSubmit = () => {
+    console.log("Submit");
+  };
+
   return (
     <div className="relative w-[42%] h-[60%] flex flex-col items-center gap-3">
       <LazyMotion features={domAnimation}>
@@ -54,6 +58,7 @@ export default function UserInterface() {
             delay: 0.45,
           }}
           className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+          onClick={handleSubmit}
         >
           Submit transfer
         </m.button>

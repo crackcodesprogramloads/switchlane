@@ -1,63 +1,55 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   useAccount,
-  usePrepareContractWrite,
   useContractWrite,
-  useContractRead,
   useNetwork,
+  usePublicClient,
 } from "wagmi";
-import contractAbi from "./MintToken.json";
-import AnimatedButton from "@/app/components/Navbar/Wallet/AnimatedButton";
+import { useEcdsaProvider } from "@zerodev/wagmi";
+import type { ECDSAProvider } from "@zerodev/sdk";
 
-export default function SponsoredMintExample() {
+import AnimatedButton from "@/app/components/Navbar/Wallet/AnimatedButton";
+import { Abi, encodeFunctionData } from "viem";
+
+import ERC20Abi from "../../abi/ERC20_Token_Abi.json";
+
+export default function Transfer() {
   const { address, isConnected } = useAccount();
   const { chain } = useNetwork();
   const [balanceChanging, setBalanceChanging] = useState(false);
+  const publicClient = usePublicClient();
 
-  const { config } = usePrepareContractWrite({
-    address: "0x34bE7f35132E97915633BC1fc020364EA5134863",
-    abi: contractAbi,
-    functionName: "mint",
-    args: [address],
-    enabled: false,
-  });
-  const { write: mint, isLoading, error } = useContractWrite(config);
-  console.log("config", config);
+  const ecdsaProvider = useEcdsaProvider();
 
-  const { data: balance = 0, refetch } = useContractRead({
-    address: "0x34bE7f35132E97915633BC1fc020364EA5134863",
-    abi: contractAbi,
-    functionName: "balanceOf",
-    args: [address],
-    enabled: !!address,
-  });
+  async function approveTransaction({
+    ecdsaProvider,
+    targetToken,
+    amount,
+  }: {
+    ecdsaProvider: ECDSAProvider;
+    targetToken: `0x${string}`;
+    amount: number;
+  }) {
+    try {
+      const spender = ""; // contract address
+      const { hash } = await ecdsaProvider.sendUserOperation({
+        target: targetToken,
+        data: encodeFunctionData({
+          abi: ERC20Abi,
+          functionName: "approve",
+          args: [spender, amount],
+        }),
+      });
 
-  useEffect(() => {
-    setBalanceChanging(false);
-  }, [balance]);
-
-  const interval = useRef<any>();
-
-  const handleClick = useCallback(async () => {
-    if (mint) {
-      setBalanceChanging(true);
-      mint();
-    }
-  }, [mint]);
-
-  useEffect(() => {
-    if (interval.current) {
-      clearInterval(interval.current);
-    }
-  }, [balance, interval]);
-
-  useEffect(() => {
-    if (error) {
+      await ecdsaProvider.waitForUserOperationTransaction(
+        hash as `0x${string}`
+      );
+    } catch (error: any) {
       console.log(error.message);
     }
-  }, [error]);
+  }
 
   return (
     <div
@@ -85,10 +77,14 @@ export default function SponsoredMintExample() {
               textAlign: "center",
               border: "10px solid #2B8DE3",
             }}
-          >{`${balance ?? 0}`}</div>
-          <AnimatedButton loading={isLoading} onClick={handleClick}>
-            Gas-free Mint
+          ></div>
+          <AnimatedButton
+            // loading={isLoading}
+            onClick={isConnected && approveTransaction}
+          >
+            Approve
           </AnimatedButton>
+
           {chain?.blockExplorers?.default.url && (
             <a
               href={`${chain?.blockExplorers?.default.url}/address/${address}#tokentxnsErc721`}
