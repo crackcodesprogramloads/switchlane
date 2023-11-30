@@ -109,7 +109,7 @@ export default function UserInterface() {
       <LazyMotion features={domAnimation}>
         <div className="w-full h-full gap-3 flex flex-col items-center">
           <m.div
-            initial={{ y: "1000%", opacity: 0.1 }}
+            initial={{ y: "500%", opacity: 0.1 }}
             animate={{ y: "0", opacity: 1 }}
             transition={{ type: "spring", damping: 20, delay: 0 }}
             className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
@@ -130,7 +130,7 @@ export default function UserInterface() {
             </span>
           </m.div>
           <m.span
-            initial={{ y: "1000%", opacity: 0.1 }}
+            initial={{ y: "500%", opacity: 0.1 }}
             animate={{ y: "0", opacity: 1 }}
             transition={{
               type: "spring",
@@ -154,7 +154,7 @@ export default function UserInterface() {
           <AddressInput placeholder="Receiver address 0x..." />
         </div>
         <m.button
-          initial={{ y: "1000%", opacity: 0.1 }}
+          initial={{ y: "500%", opacity: 0.1 }}
           animate={{ y: "0", opacity: 1 }}
           transition={{
             type: "spring",

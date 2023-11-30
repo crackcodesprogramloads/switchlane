@@ -12,7 +12,7 @@ export default function AddressInput({ placeholder }: { placeholder: string }) {
   return (
     <LazyMotion features={domAnimation}>
       <m.fieldset
-        initial={{ y: "1000%", opacity: 0.1 }}
+        initial={{ y: "500%", opacity: 0.1 }}
         animate={{ y: "0", opacity: 1 }}
         transition={{
           type: "spring",

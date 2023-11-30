@@ -11,5 +11,9 @@
 
   html {
     scrollbar-width: none;
+    overflow: hidden;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
 }
