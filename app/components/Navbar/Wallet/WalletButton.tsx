@@ -55,6 +55,7 @@ export default function WalletButton() {
                   <button
                     onClick={openChainModal}
                     type="button"
+                    disabled
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     {chain.hasIcon && (

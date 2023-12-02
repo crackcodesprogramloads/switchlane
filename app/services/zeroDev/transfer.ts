@@ -17,6 +17,7 @@ export async function approveTransaction({
     target: tokenAddress,
     data: encodeFunctionData({
       abi: ERC20Abi,
+      // approve(address _spender, uint256 _value)
       functionName: "approve",
       args: [SWITCHLANE_TRANSFER_CONTRACT_ADDRESS, amount],
     }),
@@ -44,6 +45,7 @@ export async function checkAllowance({
   const data = await readContract({
     address: tokenAddress,
     abi: ERC20Abi,
+    // allowance(address _owner, address _spender)
     functionName: "allowance",
     args: [walletAddress, spender],
   });
@@ -59,4 +61,34 @@ export async function checkAllowance({
   }
 
   return data;
+}
+
+export async function transfer({
+  ecdsaProvider,
+  destinationChainId,
+  recipientAddress,
+  tokenAddress,
+  amount,
+}: {
+  ecdsaProvider: ECDSAProvider;
+  destinationChainId: number;
+  recipientAddress: string;
+  tokenAddress: `0x${string}`;
+  amount: number;
+}) {
+  const { hash } = await ecdsaProvider.sendUserOperation({
+    target: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
+    data: encodeFunctionData({
+      abi: ERC20Abi,
+      // _transferTokens(uint64 _destinationChainSelector, address _receiver, address _token, uint256 _amount)
+      functionName: "_transferTokens",
+      args: [destinationChainId, recipientAddress, tokenAddress, amount],
+    }),
+  });
+
+  const txHash = await ecdsaProvider.waitForUserOperationTransaction(
+    hash as `0x${string}`
+  );
+
+  return txHash;
 }

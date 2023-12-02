@@ -3,12 +3,19 @@
 import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
-export default function AddressInput({ placeholder }: { placeholder: string }) {
-  const [checked, setChecked] = useState(true);
-
-  function handleCheckbox() {
-    setChecked((prevState) => !prevState);
-  }
+export default function AddressInput({
+  placeholder,
+  checkboxOnChange,
+  addressOnChange,
+  recipientAddress,
+  checked,
+}: {
+  placeholder: string;
+  checkboxOnChange: () => void;
+  addressOnChange: (e: any) => void;
+  recipientAddress: string;
+  checked: boolean;
+}) {
   return (
     <LazyMotion features={domAnimation}>
       <m.fieldset
@@ -27,17 +34,19 @@ export default function AddressInput({ placeholder }: { placeholder: string }) {
             className="w-max container flex flex-row items-center gap-2"
           >
             <input
+              checked={checked}
+              onChange={checkboxOnChange}
               type="checkbox"
               id="checkbox"
               name="checkbox"
               className="outline-none w-5 h-5 bg-transparent text-lg text-black"
-              checked={checked}
-              onChange={handleCheckbox}
             />
-            {checked ? "Send funds to my address" : ""}
+            {checked && "Send funds to my address"}
           </label>
           {!checked && (
             <input
+              onChange={addressOnChange}
+              value={recipientAddress}
               type="address"
               id="address"
               name="address"
