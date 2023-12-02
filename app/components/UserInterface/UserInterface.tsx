@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 import {
   approveTransaction,
@@ -9,7 +9,7 @@ import {
 } from "@/app/services/zeroDev/transfer";
 
 import { useEcdsaProvider } from "@zerodev/wagmi";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { polygonMumbai } from "wagmi/chains";
 import { parseEther } from "viem";
 
@@ -23,13 +23,19 @@ import SendInput from "./Inputs/SendInput";
 import NetworkInput from "./Inputs/NetworkInput";
 import TokenInput from "./Inputs/TokenInput";
 import ReceiveInput from "./Inputs/ReceiveInput";
+import LoadingModal from "../LoadingModal";
 
 export default function UserInterface() {
+  const [openModal, setOpenModal] = useState(false);
+  const [processTransferSteps, setProcessTransferSteps] = useState<
+    { status: string; text: string }[]
+  >([]);
+
   const [sendTokenAddress, setSendTokenAddress] = useState<`0x${string}`>(
     DUMMY_ERC20_TOKEN_ADDRESS
   );
-  const [inputAmount, setInputAmount] = useState<number>();
-  const [outputAmount, setOutputAmount] = useState<number>();
+  const [sendAmount, setSendAmount] = useState("");
+  const [receiveAmount, setReceiveAmount] = useState("");
 
   const [checked, setChecked] = useState(true);
   const [recipientAddress, setRecipientAddress] = useState("");
@@ -37,23 +43,33 @@ export default function UserInterface() {
   const ecdsaProvider = useEcdsaProvider();
   const { address } = useAccount();
 
+  function handleSendAmountChange(e: any) {
+    //todo: test amount input with gas sponsorship
+    let amount = e.target.value;
+    // Remove leading zeros unless it's a single zero
+    amount = amount.replace(/^0+(?!$)/, "");
+    // Remove leading decimal point if it's the first character
+    if (amount.startsWith(".")) {
+      amount = "0" + amount;
+    }
+    // Allow only digits and one decimal point
+    amount = amount.replace(/[^0-9.]/g, "");
+
+    if (!amount) {
+      setSendAmount("");
+      // handle error
+      return;
+    }
+    setSendAmount(amount);
+  }
+
   function handleAddressCheckbox() {
     setChecked((prevState) => !prevState);
   }
 
   function handleRecipientAddress(e: any) {
+    // todo: accept ens domains for each chain
     setRecipientAddress(e.target.value);
-  }
-
-  function handleInputAmountChange(e: any) {
-    const amount = e.target.value;
-    if (!amount) {
-      setInputAmount(undefined);
-      // handle error
-      return;
-    }
-
-    setInputAmount(Number(amount));
   }
 
   async function handleSubmit(e: any) {
@@ -64,17 +80,17 @@ export default function UserInterface() {
       return;
     }
 
-    if (!sendTokenAddress) {
-      // handle error
-      return;
-    }
-
-    if (!inputAmount) {
-      // handle error
-      return;
-    }
-
     if (!ecdsaProvider) {
+      // handle error
+      return;
+    }
+
+    if (!sendAmount) {
+      // handle error
+      return;
+    }
+
+    if (!sendTokenAddress) {
       // handle error
       return;
     }
@@ -86,11 +102,34 @@ export default function UserInterface() {
       return;
     }
 
+    setOpenModal((prevState) => !prevState);
+    setProcessTransferSteps((prev) => {
+      return [
+        ...prev,
+        {
+          status: "processing",
+          text: "Please sign approval for our contract to send your tokens.",
+        },
+      ];
+    });
+
     try {
       await approveTransaction({
         ecdsaProvider,
         tokenAddress: sendTokenAddress,
-        amount: Number(parseEther(String(inputAmount))),
+        amount: Number(parseEther(sendAmount)),
+      });
+
+      setProcessTransferSteps((prev) => {
+        prev[prev.length - 1].status = "completed";
+
+        return [
+          ...prev,
+          {
+            status: "processing",
+            text: "Signature received, checking allowance.",
+          },
+        ];
       });
 
       await checkAllowance({
@@ -98,20 +137,55 @@ export default function UserInterface() {
         walletAddress: address,
         spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
         tokenAddress: sendTokenAddress,
-        amount: Number(inputAmount),
+        amount: Number(sendAmount),
       });
 
-      await transfer({
-        ecdsaProvider,
-        destinationChainId: polygonMumbai.id,
-        recipientAddress: destinationAddress,
-        tokenAddress: sendTokenAddress,
-        amount: Number(inputAmount),
+      setProcessTransferSteps((prev) => {
+        prev[prev.length - 1].status = "completed";
+
+        return [
+          ...prev,
+          {
+            status: "processing",
+            text: "Transferring funds...",
+          },
+        ];
+      });
+
+      // const transferTx = await transfer({
+      //   ecdsaProvider,
+      //   destinationChainId: polygonMumbai.id,
+      //   recipientAddress: destinationAddress,
+      //   tokenAddress: sendTokenAddress,
+      //   amount: Number(inputAmount),
+      // });
+
+      setProcessTransferSteps((prev) => {
+        prev[prev.length - 1].status = "completed";
+        console.log(prev.length);
+        return [...prev];
       });
 
       // reset();
     } catch (error: any) {
       console.log(error.message);
+      setProcessTransferSteps((prev) => {
+        prev[prev.length - 1].status = "error";
+        let customErrorMessage = error.message;
+
+        if (error.message.includes("user rejected signing")) {
+          customErrorMessage = "User rejected approval to spend tokens.";
+          // todo: check error handling for coin transfer
+        }
+
+        return [
+          ...prev,
+          {
+            status: "error",
+            text: customErrorMessage,
+          },
+        ];
+      });
     }
   }
 
@@ -122,70 +196,82 @@ export default function UserInterface() {
   // }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[60%] flex flex-col items-center gap-3"
-    >
-      <LazyMotion features={domAnimation}>
-        <div className="w-full h-full gap-3 flex flex-col items-center">
-          <m.div
-            initial={{ y: "500%", opacity: 0.1 }}
-            animate={{ y: "0", opacity: 1 }}
-            transition={{ type: "spring", damping: 20, delay: 0 }}
-            className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
-          >
-            <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
-              <SendInput
-                value={inputAmount}
-                onChange={handleInputAmountChange}
-              />
-              <TokenInput title="GAS" token="Eth" />
-            </span>
-            <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
-              <TokenInput title="Token" token="Matic" />
-              <NetworkInput title="Network" side="From" chain="Polygon" />
-            </span>
-          </m.div>
-          <m.span
+    <>
+      <LoadingModal
+        openModal={openModal}
+        setOpenModal={() => {
+          setProcessTransferSteps([]);
+          setOpenModal(false);
+        }}
+        processTransferSteps={processTransferSteps}
+      />
+      <form
+        onSubmit={handleSubmit}
+        className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[60%] flex flex-col items-center gap-3"
+      >
+        <LazyMotion features={domAnimation}>
+          <div className="w-full h-full gap-3 flex flex-col items-center">
+            <m.div
+              initial={{ y: "500%", opacity: 0.1 }}
+              animate={{ y: "0", opacity: 1 }}
+              transition={{ type: "spring", damping: 20, delay: 0 }}
+              className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+            >
+              <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
+                <SendInput
+                  value={sendAmount}
+                  onChange={handleSendAmountChange}
+                />
+                <TokenInput title="GAS" token="Eth" />
+              </span>
+              <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
+                <TokenInput title="Token" token="Matic" />
+                <NetworkInput title="Network" side="From" chain="Polygon" />
+              </span>
+            </m.div>
+            <m.span
+              initial={{ y: "500%", opacity: 0.1 }}
+              animate={{ y: "0", opacity: 1 }}
+              transition={{
+                type: "spring",
+                damping: 20,
+                delay: 0.15,
+              }}
+              className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+            >
+              <ReceiveInput value={sendAmount} />
+              <NetworkInput title="Network" side="To" chain="Polygon" />
+
+              <span className="z-50 absolute -top-8 rotate-180 text-5xl">
+                𐊾
+              </span>
+            </m.span>
+
+            <AddressInput
+              placeholder="Recipient address 0x..."
+              checkboxOnChange={handleAddressCheckbox}
+              addressOnChange={handleRecipientAddress}
+              recipientAddress={recipientAddress}
+              checked={checked}
+            />
+          </div>
+          <m.button
+            type="submit"
+            disabled={openModal}
             initial={{ y: "500%", opacity: 0.1 }}
             animate={{ y: "0", opacity: 1 }}
             transition={{
               type: "spring",
               damping: 20,
-              delay: 0.15,
+              delay: 0.45,
             }}
-            className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+            className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
           >
-            <ReceiveInput value={inputAmount} />
-            <NetworkInput title="Network" side="To" chain="Polygon" />
+            Submit transfer
+          </m.button>
+        </LazyMotion>
 
-            <span className="z-50 absolute -top-8 rotate-180 text-5xl">𐊾</span>
-          </m.span>
-
-          <AddressInput
-            placeholder="Recipient address 0x..."
-            checkboxOnChange={handleAddressCheckbox}
-            addressOnChange={handleRecipientAddress}
-            recipientAddress={recipientAddress}
-            checked={checked}
-          />
-        </div>
-        <m.button
-          type="submit"
-          initial={{ y: "500%", opacity: 0.1 }}
-          animate={{ y: "0", opacity: 1 }}
-          transition={{
-            type: "spring",
-            damping: 20,
-            delay: 0.45,
-          }}
-          className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
-        >
-          Submit transfer
-        </m.button>
-      </LazyMotion>
-
-      {/* {chain?.blockExplorers?.default.url && (
+        {/* {chain?.blockExplorers?.default.url && (
             <a
               href={`${chain?.blockExplorers?.default.url}/address/${address}#tokentxnsErc721`}
               target="_blank"
@@ -193,6 +279,7 @@ export default function UserInterface() {
               Block Explorer
             </a>
           )} */}
-    </form>
+      </form>
+    </>
   );
 }
