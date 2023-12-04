@@ -25,6 +25,8 @@ import TokenInput from "./Inputs/TokenInput";
 import ReceiveInput from "./Inputs/ReceiveInput";
 import LoadingModal from "../LoadingModal";
 
+import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
+
 export default function UserInterface() {
   const [openModal, setOpenModal] = useState(false);
   const [processTransferSteps, setProcessTransferSteps] = useState<
@@ -254,6 +256,9 @@ export default function UserInterface() {
               recipientAddress={recipientAddress}
               checked={checked}
             />
+          </div>
+          <div>
+            <ContractProtocolFeeReader />
           </div>
           <m.button
             type="submit"
