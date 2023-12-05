@@ -258,7 +258,17 @@ export default function UserInterface() {
             />
           </div>
           <div>
-            <ContractProtocolFeeReader />
+            <ContractProtocolFeeReader
+              // fromToken={sendTokenAddress}
+              fromToken={"0x326c977e6efc84e512bb9c30f76e30c160ed06fb"}
+              // toToken={receiveTokenAddress}
+              toToken={"0xf1e3a5842eeef51f2967b3f05d45dd4f4205ff40"}
+              amountFromToken={sendAmount}
+              // amountToToken={receiveAmount}
+              amountToToken={1}
+              // destinationChain={destinationChain}
+              destinationChain={"16015286601757825753"} //sepolia?
+            />
           </div>
           <m.button
             type="submit"
