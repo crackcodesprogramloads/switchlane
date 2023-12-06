@@ -6,11 +6,11 @@ import {
   approveTransaction,
   checkAllowance,
   transfer,
-} from "@/app/services/zeroDev/transfer";
+} from "@/app/services/AlchemyAA/transfer";
 
 import { useEcdsaProvider } from "@zerodev/wagmi";
-import { useAccount, useBalance } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
+import { useChainModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 import { parseEther } from "viem";
 
 import {
@@ -42,6 +42,8 @@ export default function UserInterface() {
 
   const ecdsaProvider = useEcdsaProvider();
   const { address } = useAccount();
+
+  const { openChainModal } = useChainModal();
 
   function handleSendAmountChange(e: any) {
     //todo: test amount input with gas sponsorship
@@ -226,7 +228,7 @@ export default function UserInterface() {
               </span>
               <span className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
                 <TokenInput title="Token" token="Matic" />
-                <NetworkInput title="Network" side="From" chain="Polygon" />
+                <NetworkInput onClick={openChainModal} title="Network" />
               </span>
             </m.div>
             <m.span
@@ -240,7 +242,7 @@ export default function UserInterface() {
               className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
-              <NetworkInput title="Network" side="To" chain="Polygon" />
+              <NetworkInput title="Network" destinationChain="Polygon" />
 
               <span className="z-50 absolute -top-8 rotate-180 text-5xl">
                 𐊾
