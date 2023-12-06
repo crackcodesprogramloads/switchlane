@@ -2,16 +2,9 @@
 
 import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
-import {
-  approveTransaction,
-  checkAllowance,
-  transfer,
-} from "@/app/services/AlchemyAA/transfer";
 
-import { useEcdsaProvider } from "@zerodev/wagmi";
 import { useChainModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { parseEther } from "viem";
 
 import {
   DUMMY_ERC20_TOKEN_ADDRESS,
@@ -40,7 +33,6 @@ export default function UserInterface() {
   const [checked, setChecked] = useState(true);
   const [recipientAddress, setRecipientAddress] = useState("");
 
-  const ecdsaProvider = useEcdsaProvider();
   const { address } = useAccount();
 
   const { openChainModal } = useChainModal();
@@ -82,11 +74,6 @@ export default function UserInterface() {
       return;
     }
 
-    if (!ecdsaProvider) {
-      // handle error
-      return;
-    }
-
     if (!sendAmount) {
       // handle error
       return;
@@ -116,11 +103,11 @@ export default function UserInterface() {
     });
 
     try {
-      await approveTransaction({
-        ecdsaProvider,
-        tokenAddress: sendTokenAddress,
-        amount: Number(parseEther(sendAmount)),
-      });
+      // await approveTransaction({
+      //   ecdsaProvider,
+      //   tokenAddress: sendTokenAddress,
+      //   amount: Number(parseEther(sendAmount)),
+      // });
 
       setProcessTransferSteps((prev) => {
         prev[prev.length - 1].status = "completed";
@@ -134,13 +121,13 @@ export default function UserInterface() {
         ];
       });
 
-      await checkAllowance({
-        ecdsaProvider,
-        walletAddress: address,
-        spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
-        tokenAddress: sendTokenAddress,
-        amount: Number(sendAmount),
-      });
+      // await checkAllowance({
+      //   ecdsaProvider,
+      //   walletAddress: address,
+      //   spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
+      //   tokenAddress: sendTokenAddress,
+      //   amount: Number(sendAmount),
+      // });
 
       setProcessTransferSteps((prev) => {
         prev[prev.length - 1].status = "completed";
