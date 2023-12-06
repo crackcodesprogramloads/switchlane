@@ -4,13 +4,11 @@ import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 export default function AddressInput({
-  placeholder,
   checkboxOnChange,
   addressOnChange,
   recipientAddress,
   checked,
 }: {
-  placeholder: string;
   checkboxOnChange: () => void;
   addressOnChange: (e: any) => void;
   recipientAddress: string;
@@ -51,7 +49,7 @@ export default function AddressInput({
               id="address"
               name="address"
               className="w-[90%] outline-none border-dashed border-b text-center text-md bg-transparent"
-              placeholder={checked ? "" : placeholder}
+              placeholder={checked ? "" : "Recipient address 0x..."}
             />
           )}
         </span>

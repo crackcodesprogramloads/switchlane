@@ -56,7 +56,6 @@ export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
           policyId: chainConfig[chain.id].gasManagerPolicyId,
         });
 
-      console.log({ policy: chainConfig[chain.id].gasManagerPolicyId });
 
       setProvider(connectedProvider);
       return connectedProvider;

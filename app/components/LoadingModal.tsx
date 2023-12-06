@@ -5,23 +5,24 @@ import Image from "next/image";
 import PROCESSING from "/public/processing.svg";
 import COMPLETE from "/public/complete.svg";
 import ERROR from "/public/error.svg";
+import { TransferStep } from "../hooks/transferForm/useTransferModal";
 
 export default function LoadingModal({
   openModal,
-  setOpenModal,
-  processTransferSteps,
+  closeTransferModal,
+  transferSteps,
 }: {
   openModal: boolean;
-  setOpenModal: () => void;
-  processTransferSteps: { text: string; status: string }[];
+  closeTransferModal: () => void;
+  transferSteps: TransferStep[];
 }) {
   return openModal ? (
     <div className="z-50 fixed w-full h-full bg-gray-950/70 backdrop-blur-sm">
       <div className="z-50 fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-1/2 px-10 py-14 flex flex-col items-center justify-center gap-4 border-l border-t border-gray-600 rounded-lg bg-gray-950">
-        {processTransferSteps.length >= 3 ||
-        processTransferSteps.some((s) => s.status === "error") ? (
+        {transferSteps.length >= 3 ||
+        transferSteps.some((s) => s.status === "error") ? (
           <div
-            onClick={setOpenModal}
+            onClick={closeTransferModal}
             className="absolute top-2 right-4 text-xl cursor-pointer"
           >
             X
@@ -33,7 +34,7 @@ export default function LoadingModal({
           Time estimate: 2 - 3 minutes, please do not close the window.
         </p>
         <div className="flex flex-col gap-4">
-          {processTransferSteps.map((step) => {
+          {transferSteps.map((step) => {
             return (
               <div key={step.text} className="flex flex-row gap-4 items-center">
                 <p className="text-lg">{step.text}</p>

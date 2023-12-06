@@ -45,6 +45,7 @@ function ContractProtocolFeeReader({
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (data) {
+    // @ts-ignore todo: fix type
     const etherValue = ethers.utils.formatUnits(data, "ether");
     return <div>Fee: ${etherValue}</div>;
   }
