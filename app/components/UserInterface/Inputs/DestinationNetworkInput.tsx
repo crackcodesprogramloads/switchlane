@@ -4,8 +4,9 @@ import { useNetwork } from "wagmi";
 import dynamic from "next/dynamic";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
+import { useState } from "react";
 
-function NetworkInput({
+function DestinationNetworkInput({
   title,
   destinationChain,
   onClick,
@@ -46,4 +47,6 @@ function NetworkInput({
   );
 }
 
-export default dynamic(() => Promise.resolve(NetworkInput), { ssr: false });
+export default dynamic(() => Promise.resolve(DestinationNetworkInput), {
+  ssr: false,
+});

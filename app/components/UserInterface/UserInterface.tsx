@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 import { useChainModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+
+import Image from "next/image";
 
 import {
   DUMMY_ERC20_TOKEN_ADDRESS,
@@ -12,32 +14,18 @@ import {
 } from "@/app/constants";
 
 import AddressInput from "./Inputs/AddressInput";
-import SendInput from "./Inputs/SendInput";
-import NetworkInput from "./Inputs/NetworkInput";
+import SendInput from "./Inputs/SendAmountInput";
+import SendNetworkInput from "./Inputs/SendNetworkInput";
 import TokenInput from "./Inputs/TokenInput";
 import ReceiveInput from "./Inputs/ReceiveInput";
 import LoadingModal from "../LoadingModal";
 
 import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
-import NetworkSelectionModal, { Network } from "./Inputs/NetworkSelectionModal";
+import DestinationNetworkInput from "./Inputs/DestinationNetworkInput";
 
 export default function UserInterface() {
-  const networks = [
-    { name: "Ethereum", imageSrc: "/chains/ethereum-icon.png" },
-    { name: "Polygon", imageSrc: "/chains/polygon-icon.png" },
-    // ... other networks
-  ];
-  const defaultNetwork =
-    networks.find((n) => n.name === "Ethereum") || networks[0];
-  const [selectedNetwork, setSelectedNetwork] = useState<Network | null>(
-    defaultNetwork
-  );
-  const [showNetworkModal, setShowNetworkModal] = useState(false);
+  const [destinationNetwork, setDestinationNetwork] = useState();
 
-  const handleSelectNetwork = (network: Network) => {
-    setSelectedNetwork(network);
-    setShowNetworkModal(false); // Close the modal after selection
-  };
   const [openModal, setOpenModal] = useState(false);
   const [processTransferSteps, setProcessTransferSteps] = useState<
     { status: string; text: string }[]
@@ -223,7 +211,6 @@ export default function UserInterface() {
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
               transition={{ type: "spring", damping: 20, delay: 0 }}
-              // className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
               // className="w-full h-1/2 px-12 flex flex-col justify-between items-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
               className="w-full h-1/2 px-12 flex flex-col justify-between items-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
@@ -238,47 +225,10 @@ export default function UserInterface() {
 
                 <span className="w-1/2 py-6 flex flex-col items-center justify-center gap-4">
                   <TokenInput title="Token" token="Matic" />
-                  {/* <NetworkInput title="Network" side="From" chain="Polygon" /> */}
-                  <div>
-                    <button
-                      onClick={() => setShowNetworkModal(true)}
-                      className="flex items-center"
-                    >
-                      {selectedNetwork ? (
-                        <>
-                          <img
-                            src={selectedNetwork.imageSrc}
-                            alt={selectedNetwork.name}
-                            className="w-6 h-6 mr-2"
-                          />
-                          <span>{selectedNetwork.name}</span>
-                        </>
-                      ) : (
-                        <span>Select Network</span>
-                      )}
-                    </button>
-                    {/* {selectedNetwork && (
-                      <div>
-                        <img
-                          src={selectedNetwork.imageSrc}
-                          alt={selectedNetwork.name}
-                          className="w-6 h-6 mr-2"
-                        />
-                        {selectedNetwork.name}
-                      </div>
-                    )} */}
-
-                    <NetworkSelectionModal
-                      networks={networks}
-                      onSelectNetwork={handleSelectNetwork}
-                      showModal={showNetworkModal}
-                      setShowNetworkModal={setShowNetworkModal}
-                    />
-                  </div>
-                  {/* <NetworkSelectionModal /> */}
+                  <SendNetworkInput onClick={openChainModal} title="Network" />
                 </span>
               </div>
-              <div className="flex justify-center items-center w-full">
+              {/* <div className="flex justify-center items-center w-full">
                 <ContractProtocolFeeReader
                   // fromToken={sendTokenAddress}
                   fromToken={"0x326c977e6efc84e512bb9c30f76e30c160ed06fb"}
@@ -290,21 +240,8 @@ export default function UserInterface() {
                   // destinationChain={destinationChain}
                   destinationChain={"16015286601757825753"} //sepolia?
                 />
-              </div>
+              </div> */}
             </m.div>
-            {/* <div>
-              <ContractProtocolFeeReader
-                // fromToken={sendTokenAddress}
-                fromToken={"0x326c977e6efc84e512bb9c30f76e30c160ed06fb"}
-                // toToken={receiveTokenAddress}
-                toToken={"0xf1e3a5842eeef51f2967b3f05d45dd4f4205ff40"}
-                amountFromToken={sendAmount}
-                // amountToToken={receiveAmount}
-                amountToToken={1}
-                // destinationChain={destinationChain}
-                destinationChain={"16015286601757825753"} //sepolia?
-              />
-            </div> */}
             <m.span
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
@@ -316,7 +253,10 @@ export default function UserInterface() {
               className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
-              <NetworkInput title="Network" destinationChain="Polygon" />
+              <DestinationNetworkInput
+                onClick={openChainModal}
+                title="Network"
+              />
 
               <span className="z-50 absolute -top-8 rotate-180 text-5xl">
                 𐊾

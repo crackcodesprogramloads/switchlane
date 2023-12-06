@@ -1,5 +1,5 @@
-// NetworkSelectionModal.tsx
 import React from "react";
+import Image from "next/image";
 
 export interface Network {
   name: string;
@@ -33,10 +33,12 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
               className="flex items-center p-2 hover:bg-gray-500 w-full"
               onClick={() => onSelectNetwork(network)}
             >
-              <img
+              <Image
+                className="w-6 h-6 mr-2"
                 src={network.imageSrc}
                 alt={network.name}
-                className="w-6 h-6 mr-2"
+                width={20}
+                height={20}
               />
               {network.name}
             </button>
