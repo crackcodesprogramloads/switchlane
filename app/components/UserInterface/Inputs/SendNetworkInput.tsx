@@ -1,34 +1,34 @@
 "use client";
 
-import { useNetwork } from "wagmi";
 import dynamic from "next/dynamic";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton, useChainModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 
-function SendNetworkInput({
-  title,
-  destinationChain,
-  onClick,
-}: {
-  title: string;
-  destinationChain?: string;
-  onClick?: () => void;
-}) {
-  const { chain } = useNetwork();
+function SendNetworkInput() {
+  const { openChainModal } = useChainModal();
+
+  function removeSecondWord(chainName: string): string {
+    // Split the chainName into an array of words
+    const words = chainName.split(" ");
+
+    // Keep only the first word
+    const result = words.length > 1 ? words[0] : chainName;
+
+    return result;
+  }
 
   return (
     <fieldset
-      onClick={onClick}
+      onClick={openChainModal}
       className="w-full h-1/2 flex items-center text-zinc-200 border-dashed border-t border-gray-600 "
     >
-      <legend className="ml-auto mr-auto px-2 text-md">{title}</legend>
+      <legend className="ml-auto mr-auto px-2 text-md">Network</legend>
       <ConnectButton.Custom>
         {({ chain }) => {
           if (!chain) return <></>;
           return (
             chain.hasIcon && (
               <span className="w-full h-full flex flex-row items-center justify-center gap-4 text-3xl cursor-pointer">
-                {chain.name}
                 {chain.iconUrl && (
                   <Image
                     width={35}
@@ -37,6 +37,7 @@ function SendNetworkInput({
                     src={chain.iconUrl}
                   />
                 )}
+                {chain.name ? removeSecondWord(chain.name) : ""}
               </span>
             )
           );

@@ -1,113 +1,79 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 import { useChainModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-
-import Image from "next/image";
 
 import {
   DUMMY_ERC20_TOKEN_ADDRESS,
   SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
 } from "@/app/constants";
 
-import AddressInput from "./Inputs/AddressInput";
 import SendInput from "./Inputs/SendAmountInput";
-import SendNetworkInput from "./Inputs/SendNetworkInput";
 import TokenInput from "./Inputs/TokenInput";
+import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
+import SendNetworkInput from "./Inputs/SendNetworkInput";
 import ReceiveInput from "./Inputs/ReceiveInput";
+import DestinationNetworkInput, {
+  DestinationNetworkModal,
+} from "./Inputs/DestinationNetworkInput";
+import AddressInput from "./Inputs/AddressInput";
 import LoadingModal from "../LoadingModal";
 
-import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
-import DestinationNetworkInput from "./Inputs/DestinationNetworkInput";
+import useFormattedSendAmount from "@/app/hooks/transferForm/useFormattedSendAmount";
+import useDestinationModal from "@/app/hooks/transferForm/useDestinationModal";
+import useRecipientAddress from "@/app/hooks/transferForm/useRecipientAddress";
+import useTransferModal from "@/app/hooks/transferForm/useTransferModal";
 
 export default function UserInterface() {
-  const [destinationNetwork, setDestinationNetwork] = useState();
+  const { sendAmount, handleSendAmountChange } = useFormattedSendAmount();
 
-  const [openModal, setOpenModal] = useState(false);
-  const [processTransferSteps, setProcessTransferSteps] = useState<
-    { status: string; text: string }[]
-  >([]);
+  const {
+    isDestinationNetworkModalOpen,
+    destinationNetwork,
+    toggleDestinationModal,
+    setDestinationNetwork,
+  } = useDestinationModal();
+
+  const {
+    isSenderRecipient,
+    recipientAddress,
+    destinationAddress,
+    toggleIsSenderRecipient,
+    handleRecipientAddress,
+  } = useRecipientAddress();
+
+  const {
+    isTransferModalOpen,
+    transferSteps,
+    toggleIsTransferOpen,
+    closeTransferModal,
+    updateTransferSteps,
+    defaultTransferSteps,
+    handleTransferError,
+  } = useTransferModal();
 
   const [sendTokenAddress, setSendTokenAddress] = useState<`0x${string}`>(
     DUMMY_ERC20_TOKEN_ADDRESS
   );
-  const [sendAmount, setSendAmount] = useState("");
   const [receiveAmount, setReceiveAmount] = useState("");
 
-  const [checked, setChecked] = useState(true);
-  const [recipientAddress, setRecipientAddress] = useState("");
-
-  const { address } = useAccount();
-
-  const { openChainModal } = useChainModal();
-
-  function handleSendAmountChange(e: any) {
-    //todo: test amount input with gas sponsorship
-    let amount = e.target.value;
-    // Remove leading zeros unless it's a single zero
-    amount = amount.replace(/^0+(?!$)/, "");
-    // Remove leading decimal point if it's the first character
-    if (amount.startsWith(".")) {
-      amount = "0" + amount;
+  function validateFormInput() {
+    // todo: validate form data
+    if (!destinationAddress) {
+      throw Error("Missing destination address");
     }
-    // Allow only digits and one decimal point
-    amount = amount.replace(/[^0-9.]/g, "");
-
-    if (!amount) {
-      setSendAmount("");
-      // handle error
-      return;
-    }
-    setSendAmount(amount);
-  }
-
-  function handleAddressCheckbox() {
-    setChecked((prevState) => !prevState);
-  }
-
-  function handleRecipientAddress(e: any) {
-    // todo: accept ens domains for each chain
-    setRecipientAddress(e.target.value);
   }
 
   async function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (!address) {
-      // handle error
-      return;
-    }
+    validateFormInput();
 
-    if (!sendAmount) {
-      // handle error
-      return;
-    }
-
-    if (!sendTokenAddress) {
-      // handle error
-      return;
-    }
-
-    const destinationAddress = checked ? address : recipientAddress;
-
-    if (!destinationAddress) {
-      // handle error
-      return;
-    }
-
-    setOpenModal((prevState) => !prevState);
-    setProcessTransferSteps((prev) => {
-      return [
-        ...prev,
-        {
-          status: "processing",
-          text: "Please sign approval for our contract to send your tokens.",
-        },
-      ];
-    });
+    toggleIsTransferOpen();
+    updateTransferSteps({ newStep: defaultTransferSteps.signApproval });
 
     try {
       // await approveTransaction({
@@ -116,16 +82,9 @@ export default function UserInterface() {
       //   amount: Number(parseEther(sendAmount)),
       // });
 
-      setProcessTransferSteps((prev) => {
-        prev[prev.length - 1].status = "completed";
-
-        return [
-          ...prev,
-          {
-            status: "processing",
-            text: "Signature received, checking allowance.",
-          },
-        ];
+      updateTransferSteps({
+        isPreviousStepCompleted: true,
+        newStep: defaultTransferSteps.receivedSignature,
       });
 
       // await checkAllowance({
@@ -136,16 +95,9 @@ export default function UserInterface() {
       //   amount: Number(sendAmount),
       // });
 
-      setProcessTransferSteps((prev) => {
-        prev[prev.length - 1].status = "completed";
-
-        return [
-          ...prev,
-          {
-            status: "processing",
-            text: "Transferring funds...",
-          },
-        ];
+      updateTransferSteps({
+        isPreviousStepCompleted: true,
+        newStep: defaultTransferSteps.transferring,
       });
 
       // const transferTx = await transfer({
@@ -156,32 +108,11 @@ export default function UserInterface() {
       //   amount: Number(inputAmount),
       // });
 
-      setProcessTransferSteps((prev) => {
-        prev[prev.length - 1].status = "completed";
-        console.log(prev.length);
-        return [...prev];
-      });
+      updateTransferSteps({ isPreviousStepCompleted: true });
 
       // reset();
     } catch (error: any) {
-      console.log(error.message);
-      setProcessTransferSteps((prev) => {
-        prev[prev.length - 1].status = "error";
-        let customErrorMessage = error.message;
-
-        if (error.message.includes("user rejected signing")) {
-          customErrorMessage = "User rejected approval to spend tokens.";
-          // todo: check error handling for coin transfer
-        }
-
-        return [
-          ...prev,
-          {
-            status: "error",
-            text: customErrorMessage,
-          },
-        ];
-      });
+      handleTransferError(error);
     }
   }
 
@@ -194,13 +125,18 @@ export default function UserInterface() {
   return (
     <>
       <LoadingModal
-        openModal={openModal}
-        setOpenModal={() => {
-          setProcessTransferSteps([]);
-          setOpenModal(false);
-        }}
-        processTransferSteps={processTransferSteps}
+        openModal={isTransferModalOpen}
+        closeTransferModal={closeTransferModal}
+        transferSteps={transferSteps}
       />
+      {isDestinationNetworkModalOpen && (
+        <DestinationNetworkModal
+          destinationNetwork={destinationNetwork}
+          setDestinationNetwork={setDestinationNetwork}
+          handleModalClose={() => toggleDestinationModal(false)}
+        />
+      )}
+
       <form
         onSubmit={handleSubmit}
         className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[60%] flex flex-col items-center gap-3"
@@ -211,25 +147,15 @@ export default function UserInterface() {
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
               transition={{ type: "spring", damping: 20, delay: 0 }}
-              // className="w-full h-1/2 px-12 flex flex-col justify-between items-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
-              className="w-full h-1/2 px-12 flex flex-col justify-between items-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="flex items-center w-full">
-                <span className="w-1/2 py-6 flex flex-col items-center justify-center gap-4">
-                  <SendInput
-                    value={sendAmount}
-                    onChange={handleSendAmountChange}
-                  />
-                  <TokenInput title="GAS" token="Eth" />
-                </span>
-
-                <span className="w-1/2 py-6 flex flex-col items-center justify-center gap-4">
-                  <TokenInput title="Token" token="Matic" />
-                  <SendNetworkInput onClick={openChainModal} title="Network" />
-                </span>
-              </div>
-              {/* <div className="flex justify-center items-center w-full">
-                <ContractProtocolFeeReader
+              <div className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
+                <SendInput
+                  value={sendAmount}
+                  onChange={handleSendAmountChange}
+                />
+                <TokenInput title="GAS" token="Eth" />
+                {/* <ContractProtocolFeeReader
                   // fromToken={sendTokenAddress}
                   fromToken={"0x326c977e6efc84e512bb9c30f76e30c160ed06fb"}
                   // toToken={receiveTokenAddress}
@@ -239,10 +165,15 @@ export default function UserInterface() {
                   amountToToken={1}
                   // destinationChain={destinationChain}
                   destinationChain={"16015286601757825753"} //sepolia?
-                />
-              </div> */}
+                /> */}
+              </div>
+              <div className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
+                {/* todo: dynamic token input */}
+                <TokenInput title="Token" token="Matic" />
+                <SendNetworkInput />
+              </div>
             </m.div>
-            <m.span
+            <m.div
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
               transition={{
@@ -250,31 +181,30 @@ export default function UserInterface() {
                 damping: 20,
                 delay: 0.15,
               }}
-              className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="w-[85%] h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
               <DestinationNetworkInput
-                onClick={openChainModal}
-                title="Network"
+                destinationNetwork={destinationNetwork}
+                onClick={() => toggleDestinationModal(true)}
               />
 
               <span className="z-50 absolute -top-8 rotate-180 text-5xl">
                 𐊾
               </span>
-            </m.span>
+            </m.div>
 
             <AddressInput
-              placeholder="Recipient address 0x..."
-              checkboxOnChange={handleAddressCheckbox}
+              checkboxOnChange={toggleIsSenderRecipient}
               addressOnChange={handleRecipientAddress}
               recipientAddress={recipientAddress}
-              checked={checked}
+              checked={isSenderRecipient}
             />
           </div>
 
           <m.button
             type="submit"
-            disabled={openModal}
+            disabled={isTransferModalOpen}
             initial={{ y: "500%", opacity: 0.1 }}
             animate={{ y: "0", opacity: 1 }}
             transition={{
