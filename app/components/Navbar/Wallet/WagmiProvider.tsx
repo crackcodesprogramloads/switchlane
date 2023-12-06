@@ -1,7 +1,15 @@
 "use client";
 
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { polygonMumbai, sepolia } from "wagmi/chains";
+import {
+  polygonMumbai,
+  sepolia,
+  optimismGoerli,
+  // arbitrumGoerli, // todo: only supported on mainnet
+  // avalancheFuji, // todo: not working
+  // bscTestnet, // todo: not working
+  baseGoerli,
+} from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import {
   RainbowKitProvider,
@@ -12,81 +20,57 @@ import {
 import { metaMaskWallet } from "@rainbow-me/rainbowkit/wallets";
 
 import "@rainbow-me/rainbowkit/styles.css";
-import { ReactNode, useEffect, useRef, useState } from "react";
-
-import { enhanceWalletWithAAConnector } from "@zerodev/wagmi/rainbowkit";
-
-const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || "";
-const alchemyProjectId = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "";
-
-const zeroDevMumbaiProjectId =
-  process.env.NEXT_PUBLIC_ZERODEV_PROJECT_ID_MUMBAI || "";
-const zeroSepoliaDevProjectId =
-  process.env.NEXT_PUBLIC_ZERODEV_PROJECT_ID_SEPOLIA || "";
-
-const CHAIN_OPTIONS = [
-  { chain: polygonMumbai, projectId: zeroDevMumbaiProjectId },
-  { chain: sepolia, projectId: zeroSepoliaDevProjectId },
-];
+import { ReactNode } from "react";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { chainConfig } from "@/app/services/AlchemyAA/chainConfig";
 
 export default function WagmiProvider({ children }: { children: ReactNode }) {
-  const [selectedChain, setSelectedChain] = useState(zeroDevMumbaiProjectId);
-  const { chains, publicClient, webSocketPublicClient } = configureChains(
-    CHAIN_OPTIONS.map((c) => c.chain),
-    [alchemyProvider({ apiKey: alchemyProjectId })]
+  const chainsArray = Object.keys(chainConfig).map(
+    (id) => chainConfig[Number(id)].chain
   );
+
+  const { chains, publicClient } = configureChains(chainsArray, [
+    // alchemyProvider({
+    //   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "",
+    // }),
+    jsonRpcProvider({
+      rpc: (c) => {
+        const http = chainConfig[c.id]?.rpcUrl;
+
+        if (!http) {
+          throw new Error(`Chain ${c.id} not configured`);
+        }
+
+        return {
+          http,
+          webSocket: http.replace("https", "wss"),
+        };
+      },
+    }),
+
+    // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY || "" }),
+  ]);
 
   const connectors = connectorsForWallets([
     {
-      groupName: "Switchlane Smart Wallet",
+      groupName: "Switchlane",
       wallets: [
-        enhanceWalletWithAAConnector(
-          metaMaskWallet({
-            chains,
-            projectId: walletConnectProjectId,
-          }),
-          {
-            projectId: selectedChain,
-            projectIds: CHAIN_OPTIONS.map((c) => c.projectId),
-          }
-        ),
+        metaMaskWallet({
+          chains,
+          projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || "",
+        }),
       ],
     },
   ]);
 
-  const config = createConfig({
+  const wagmiConfig = createConfig({
     autoConnect: true,
     connectors,
     publicClient,
-    webSocketPublicClient,
   });
 
-  async function chainChangeListener(chainId: string) {
-    const chainIdNumber = parseInt(chainId, 16);
-
-    const matchedChain = CHAIN_OPTIONS.find(
-      (c) => c.chain.id === chainIdNumber
-    );
-
-    if (matchedChain) {
-      setSelectedChain(matchedChain.projectId);
-    } else {
-    }
-  }
-
-  useEffect(() => {
-    if (window?.ethereum) {
-      window.ethereum.on("chainChanged", chainChangeListener);
-    }
-    return () => {
-      if (window?.ethereum) {
-        window.ethereum.removeListener("chainChanged", chainChangeListener);
-      }
-    };
-  }, []);
-
   return (
-    <WagmiConfig config={config}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         theme={{
           lightMode: lightTheme(),

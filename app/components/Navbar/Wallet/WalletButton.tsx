@@ -51,12 +51,11 @@ export default function WalletButton() {
                 );
               }
               return (
-                <div style={{ display: "flex", gap: 12 }}>
+                <div className="flex gap-12">
                   <button
+                    className="py-2 px-4 border-2 border-zinc-200 rounded-full flex flex-row items-center"
                     onClick={openChainModal}
                     type="button"
-                    disabled
-                    style={{ display: "flex", alignItems: "center" }}
                   >
                     {chain.hasIcon && (
                       <div
@@ -81,12 +80,12 @@ export default function WalletButton() {
                     )}
                     {chain.name}
                   </button>
-                  <button onClick={openAccountModal} type="button">
+                  {/* <button onClick={openAccountModal} type="button">
                     {account.displayName}
                     {account.displayBalance
                       ? ` (${account.displayBalance})`
                       : ""}
-                  </button>
+                  </button> */}
                 </div>
               );
             })()}

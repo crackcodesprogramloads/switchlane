@@ -2,16 +2,9 @@
 
 import { useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
-import {
-  approveTransaction,
-  checkAllowance,
-  transfer,
-} from "@/app/services/zeroDev/transfer";
 
-import { useEcdsaProvider } from "@zerodev/wagmi";
-import { useAccount, useBalance } from "wagmi";
-import { polygonMumbai } from "wagmi/chains";
-import { parseEther } from "viem";
+import { useChainModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 import {
   DUMMY_ERC20_TOKEN_ADDRESS,
@@ -59,8 +52,9 @@ export default function UserInterface() {
   const [checked, setChecked] = useState(true);
   const [recipientAddress, setRecipientAddress] = useState("");
 
-  const ecdsaProvider = useEcdsaProvider();
   const { address } = useAccount();
+
+  const { openChainModal } = useChainModal();
 
   function handleSendAmountChange(e: any) {
     //todo: test amount input with gas sponsorship
@@ -99,11 +93,6 @@ export default function UserInterface() {
       return;
     }
 
-    if (!ecdsaProvider) {
-      // handle error
-      return;
-    }
-
     if (!sendAmount) {
       // handle error
       return;
@@ -133,11 +122,11 @@ export default function UserInterface() {
     });
 
     try {
-      await approveTransaction({
-        ecdsaProvider,
-        tokenAddress: sendTokenAddress,
-        amount: Number(parseEther(sendAmount)),
-      });
+      // await approveTransaction({
+      //   ecdsaProvider,
+      //   tokenAddress: sendTokenAddress,
+      //   amount: Number(parseEther(sendAmount)),
+      // });
 
       setProcessTransferSteps((prev) => {
         prev[prev.length - 1].status = "completed";
@@ -151,13 +140,13 @@ export default function UserInterface() {
         ];
       });
 
-      await checkAllowance({
-        ecdsaProvider,
-        walletAddress: address,
-        spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
-        tokenAddress: sendTokenAddress,
-        amount: Number(sendAmount),
-      });
+      // await checkAllowance({
+      //   ecdsaProvider,
+      //   walletAddress: address,
+      //   spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
+      //   tokenAddress: sendTokenAddress,
+      //   amount: Number(sendAmount),
+      // });
 
       setProcessTransferSteps((prev) => {
         prev[prev.length - 1].status = "completed";
@@ -327,7 +316,7 @@ export default function UserInterface() {
               className="relative w-[85%] h-2/3 px-16 flex flex-row items-center justify-center gap-20 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
-              <NetworkInput title="Network" side="To" chain="Polygon" />
+              <NetworkInput title="Network" destinationChain="Polygon" />
 
               <span className="z-50 absolute -top-8 rotate-180 text-5xl">
                 𐊾
