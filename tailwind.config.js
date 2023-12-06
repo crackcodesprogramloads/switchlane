@@ -8,6 +8,9 @@ const config = {
   ],
   theme: {
     extend: {
+      colors: {
+        rainbowGrey: "#1A1C1E",
+      },
       backgroundImage: {},
     },
   },
