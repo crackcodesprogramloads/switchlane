@@ -46,7 +46,7 @@ function ContractProtocolFeeReader({
   if (error) return <div>Error: {error.message}</div>;
   if (data) {
     const etherValue = ethers.utils.formatUnits(data, "ether");
-    return <div>Fee: {etherValue}</div>;
+    return <div>Fee: ${etherValue}</div>;
   }
 
   return <div>Waiting for input...</div>;
