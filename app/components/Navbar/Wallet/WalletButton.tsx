@@ -2,7 +2,8 @@
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
-import AnimatedButton from "./AnimatedButton";
+import Button from "./Button";
+import { m, LazyMotion, domAnimation } from "framer-motion";
 
 export default function WalletButton() {
   return (
@@ -10,14 +11,11 @@ export default function WalletButton() {
       {({
         account,
         chain,
-        openAccountModal,
         openChainModal,
         openConnectModal,
         authenticationStatus,
         mounted,
       }) => {
-        // Note: If your app doesn't use authentication, you
-        // can remove all 'authenticationStatus' checks
         const ready = mounted && authenticationStatus !== "loading";
         const connected =
           ready &&
@@ -25,71 +23,62 @@ export default function WalletButton() {
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
         return (
-          <div
-            {...(!ready && {
-              "aria-hidden": true,
-              style: {
-                opacity: 0,
-                pointerEvents: "none",
-                userSelect: "none",
-              },
-            })}
-          >
-            {(() => {
-              if (!connected) {
+          <LazyMotion features={domAnimation}>
+            <m.div
+              initial={{ y: "-200%", opacity: 0.1 }}
+              animate={{ y: "0", opacity: 1 }}
+              transition={{
+                type: "spring",
+                damping: 20,
+                delay: 0,
+              }}
+            >
+              {(() => {
+                if (!connected) {
+                  return (
+                    <Button onClick={openConnectModal}>Connect Wallet</Button>
+                  );
+                }
+                if (chain.unsupported) {
+                  return (
+                    <Button onClick={openChainModal}>Wrong network</Button>
+                  );
+                }
                 return (
-                  <AnimatedButton onClick={openConnectModal}>
-                    Connect Wallet
-                  </AnimatedButton>
+                  <div className="flex gap-12">
+                    <button
+                      className="py-2 px-4 border-2 border-zinc-200 rounded-full flex flex-row items-center"
+                      onClick={openChainModal}
+                      type="button"
+                    >
+                      {chain.hasIcon && (
+                        <div
+                          style={{
+                            background: chain.iconBackground,
+                            width: 25,
+                            height: 25,
+                            borderRadius: 999,
+                            overflow: "hidden",
+                            marginRight: 4,
+                          }}
+                        >
+                          {chain.iconUrl && (
+                            <Image
+                              alt={chain.name ?? "Chain icon"}
+                              src={chain.iconUrl}
+                              width={25}
+                              height={25}
+                            />
+                          )}
+                        </div>
+                      )}
+                      {chain.name}
+                    </button>
+                  </div>
                 );
-              }
-              if (chain.unsupported) {
-                return (
-                  <AnimatedButton onClick={openChainModal}>
-                    Wrong network
-                  </AnimatedButton>
-                );
-              }
-              return (
-                <div className="flex gap-12">
-                  <button
-                    className="py-2 px-4 border-2 border-zinc-200 rounded-full flex flex-row items-center"
-                    onClick={openChainModal}
-                    type="button"
-                  >
-                    {chain.hasIcon && (
-                      <div
-                        style={{
-                          background: chain.iconBackground,
-                          width: 25,
-                          height: 25,
-                          borderRadius: 999,
-                          overflow: "hidden",
-                          marginRight: 4,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <Image
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                            width={25}
-                            height={25}
-                          />
-                        )}
-                      </div>
-                    )}
-                    {chain.name}
-                  </button>
-                  {/* <button onClick={openAccountModal} type="button">
-                    {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ""}
-                  </button> */}
-                </div>
-              );
-            })()}
-          </div>
+              })()}
+            </m.div>
+          </LazyMotion>
         );
       }}
     </ConnectButton.Custom>

@@ -10,12 +10,16 @@ import {
   getDefaultEntryPointAddress,
 } from "@alchemy/aa-core";
 
+import { Alchemy } from "alchemy-sdk";
+
 import { Address } from "viem";
 import type { Chain } from "viem";
 import { chainConfig } from "@/app/services/AlchemyAA/chainConfig";
 
 export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
-  const [provider, setProvider] = useState<AlchemyProvider | null>(null);
+  const [provider, setProvider] = useState<(AlchemyProvider & Alchemy) | null>(
+    null
+  );
 
   const disconnectProviderFromAccount = useCallback(() => {
     if (!provider) return null;
@@ -30,7 +34,12 @@ export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
       const provider = new AlchemyProvider({
         chain,
         rpcUrl: chainConfig[chain.id].rpcUrl,
-      });
+      }).withAlchemyEnhancedApis(
+        new Alchemy({
+          network: chainConfig[chain.id].network,
+          apiKey: chainConfig[chain.id].apiKey,
+        })
+      );
 
       setProvider(provider);
     }
@@ -54,8 +63,13 @@ export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
         })
         .withAlchemyGasManager({
           policyId: chainConfig[chain.id].gasManagerPolicyId,
-        });
-
+        })
+        .withAlchemyEnhancedApis(
+          new Alchemy({
+            network: chainConfig[chain.id].network,
+            apiKey: chainConfig[chain.id].apiKey,
+          })
+        );
 
       setProvider(connectedProvider);
       return connectedProvider;

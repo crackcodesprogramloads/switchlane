@@ -1,67 +1,102 @@
-export default function TokenInput({
-  title,
-  token,
+"use client";
+
+import { Dispatch, SetStateAction } from "react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { m, LazyMotion, domAnimation } from "framer-motion";
+
+import CLOSE_ICON from "/public/close.svg";
+import { TOKENS } from "@/app/constants";
+
+export function TokenModal({
+  currentToken,
+  setCurrentToken,
+  handleModalClose,
 }: {
-  title: string;
-  token?: string;
+  currentToken: any;
+  setCurrentToken: Dispatch<SetStateAction<string>>;
+  handleModalClose: () => void;
 }) {
-  const svgStyle = {
-    enableBackground: "new 0 0 38.4 33.5",
-  } as React.CSSProperties;
+  const TokenOptions = TOKENS.map((token, index) => {
+    return (
+      <button
+        onClick={() => setCurrentToken(token.name)}
+        key={index}
+        className={`px-2 py-[6px] my-[2px] w-full h-full flex flex-row items-center gap-3 rounded-xl ${
+          currentToken === token.name ? "bg-[#3898FF]" : "hover:bg-[#2e3036]"
+        }`}
+      >
+        <Image src={token.icon} alt="chain icon" width={35} height={35} />
+        <p className="text-md">{token.name}</p>
+      </button>
+    );
+  });
+
+  return (
+    <div
+      className="z-50 fixed w-full h-[60%] bg-gray-950/70 backdrop-blur-sm flex flex-col items-center justify-center"
+      onClick={handleModalClose}
+    >
+      <LazyMotion features={domAnimation}>
+        <m.div
+          className="w-72 px-4 py-2 flex flex-col justify-center border border-gray-800 rounded-3xl bg-[#1A1B1F] text-zinc-200"
+          initial={{ y: "70px", opacity: 0.1 }}
+          animate={{ y: "0", opacity: 1 }}
+          transition={{
+            type: "tween",
+            duration: 0.2,
+          }}
+        >
+          <div className="flex flex-row items-center justify-between">
+            <h1 className="p-2 text-zinc-00 text-lg font-bold">Select token</h1>
+
+            <div
+              className="w-6 h-6 hover:scale-[1.1] flex items-center justify-center border border-gray-800 rounded-full bg-[#2e3036] cursor-pointer"
+              onClick={handleModalClose}
+            >
+              <Image src={CLOSE_ICON} alt="close icon" width={10} height={10} />
+            </div>
+          </div>
+          {TokenOptions}
+        </m.div>
+      </LazyMotion>
+    </div>
+  );
+}
+
+function TokenInput({
+  token,
+  onClick,
+}: {
+  token?: string;
+  onClick: () => void;
+}) {
+  const selectedToken = TOKENS.find((c) => c.name === token);
+
   return (
     <fieldset className="w-full h-1/2 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
-      <legend className="ml-auto mr-auto px-2 text-md">{title}</legend>
-      <span className="w-full h-full flex flex-row items-center justify-center gap-4 text-3xl">
-        {token}
-        {token === "Matic" ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.4em"
-            height="1.4em"
-            viewBox="0 0 38.4 33.5"
-            style={svgStyle}
-            xmlSpace="preserve"
-          >
-            <path
-              d="M29 10.2c-.7-.4-1.6-.4-2.4 0L21 13.5l-3.8 2.1-5.5 3.3c-.7.4-1.6.4-2.4 0L5 16.3c-.7-.4-1.2-1.2-1.2-2.1v-5c0-.8.4-1.6 1.2-2.1l4.3-2.5c.7-.4 1.6-.4 2.4 0L16 7.2c.7.4 1.2 1.2 1.2 2.1v3.3l3.8-2.2V7c0-.8-.4-1.6-1.2-2.1l-8-4.7c-.7-.4-1.6-.4-2.4 0L1.2 5C.4 5.4 0 6.2 0 7v9.4c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l5.5-3.2 3.8-2.2 5.5-3.2c.7-.4 1.6-.4 2.4 0l4.3 2.5c.7.4 1.2 1.2 1.2 2.1v5c0 .8-.4 1.6-1.2 2.1L29 28.8c-.7.4-1.6.4-2.4 0l-4.3-2.5c-.7-.4-1.2-1.2-1.2-2.1V21l-3.8 2.2v3.3c0 .8.4 1.6 1.2 2.1l8.1 4.7c.7.4 1.6.4 2.4 0l8.1-4.7c.7-.4 1.2-1.2 1.2-2.1V17c0-.8-.4-1.6-1.2-2.1L29 10.2z"
-              style={{ fill: "#8247e5" }}
+      <legend className="ml-auto mr-auto px-2 text-md">Token</legend>
+      <button
+        type="button"
+        onClick={onClick}
+        className="w-full h-full flex flex-row items-center justify-center gap-4"
+      >
+        {selectedToken ? (
+          <>
+            <Image
+              src={selectedToken.icon}
+              alt="token icon"
+              width={35}
+              height={35}
             />
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.4em"
-            height="1.4em"
-            shapeRendering="geometricPrecision"
-            textRendering="geometricPrecision"
-            imageRendering="optimizeQuality"
-            fillRule="evenodd"
-            clipRule="evenodd"
-            viewBox="0 0 784.37 1277.39"
-          >
-            <g fillRule="nonzero">
-              <path
-                fill="#343434"
-                d="m392.07 0-8.57 29.11v844.63l8.57 8.55 392.06-231.75z"
-              />
-              <path
-                fill="#8C8C8C"
-                d="M392.07 0 0 650.54l392.07 231.75V472.33z"
-              />
-              <path
-                fill="#3C3C3B"
-                d="m392.07 956.52-4.83 5.89v300.87l4.83 14.1 392.3-552.49z"
-              />
-              <path fill="#8C8C8C" d="M392.07 1277.38V956.52L0 724.89z" />
-              <path
-                fill="#141414"
-                d="m392.07 882.29 392.06-231.75-392.06-178.21z"
-              />
-              <path fill="#393939" d="m0 650.54 392.07 231.75V472.33z" />
-            </g>
-          </svg>
-        )}
-      </span>
+            <p className="text-3xl">{selectedToken.name}</p>
+          </>
+        ) : null}
+      </button>
     </fieldset>
   );
 }
+
+export default dynamic(() => Promise.resolve(TokenInput), {
+  ssr: false,
+});

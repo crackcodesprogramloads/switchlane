@@ -3,7 +3,7 @@ import { WalletClientSigner } from "@alchemy/aa-core";
 import { WalletClient, createWalletClient, custom } from "viem";
 
 export const useSigner = () => {
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" || !window.ethereum) {
     return { signer: null };
   }
 

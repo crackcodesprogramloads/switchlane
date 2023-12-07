@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
-
-import { useChainModal } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import {
+  approveTransaction,
+  checkAllowance,
+  transfer,
+} from "@/app/services/AlchemyAA/transfer";
+import { parseEther } from "viem/utils";
 
 import {
   DUMMY_ERC20_TOKEN_ADDRESS,
@@ -12,8 +15,7 @@ import {
 } from "@/app/constants";
 
 import SendInput from "./Inputs/SendAmountInput";
-import TokenInput from "./Inputs/TokenInput";
-import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
+import TokenInput, { TokenModal } from "./Inputs/TokenInput";
 import SendNetworkInput from "./Inputs/SendNetworkInput";
 import ReceiveInput from "./Inputs/ReceiveInput";
 import DestinationNetworkInput, {
@@ -21,20 +23,31 @@ import DestinationNetworkInput, {
 } from "./Inputs/DestinationNetworkInput";
 import AddressInput from "./Inputs/AddressInput";
 import LoadingModal from "../LoadingModal";
+import { AAWalletProviderContext } from "../Navbar/Wallet/AAWalletProvider";
+import EstimateCost from "./EstimateCost";
 
 import useFormattedSendAmount from "@/app/hooks/transferForm/useFormattedSendAmount";
+import useTokenModal from "@/app/hooks/transferForm/useTokenModal";
 import useDestinationModal from "@/app/hooks/transferForm/useDestinationModal";
 import useRecipientAddress from "@/app/hooks/transferForm/useRecipientAddress";
 import useTransferModal from "@/app/hooks/transferForm/useTransferModal";
 
 export default function UserInterface() {
+  const { provider: smartWalletProvider, smartWalletAddress } = useContext(
+    AAWalletProviderContext
+  );
+
   const { sendAmount, handleSendAmountChange } = useFormattedSendAmount();
+
+  const { isTokenModalOpen, currentToken, toggleTokenModal, setCurrentToken } =
+    useTokenModal();
 
   const {
     isDestinationNetworkModalOpen,
     destinationNetwork,
     toggleDestinationModal,
     setDestinationNetwork,
+    destinationChainId,
   } = useDestinationModal();
 
   const {
@@ -65,6 +78,14 @@ export default function UserInterface() {
     if (!destinationAddress) {
       throw Error("Missing destination address");
     }
+
+    if (!destinationChainId) {
+      throw Error("Missing destination chain id");
+    }
+
+    if (!smartWalletProvider) {
+      throw Error("Missing smart wallet provider");
+    }
   }
 
   async function handleSubmit(e: any) {
@@ -76,37 +97,39 @@ export default function UserInterface() {
     updateTransferSteps({ newStep: defaultTransferSteps.signApproval });
 
     try {
-      // await approveTransaction({
-      //   ecdsaProvider,
-      //   tokenAddress: sendTokenAddress,
-      //   amount: Number(parseEther(sendAmount)),
-      // });
+      await approveTransaction({
+        smartWalletProvider: smartWalletProvider!,
+        tokenAddress: sendTokenAddress,
+        amount: Number(parseEther(sendAmount)),
+      });
 
       updateTransferSteps({
         isPreviousStepCompleted: true,
         newStep: defaultTransferSteps.receivedSignature,
       });
 
-      // await checkAllowance({
-      //   ecdsaProvider,
-      //   walletAddress: address,
-      //   spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
-      //   tokenAddress: sendTokenAddress,
-      //   amount: Number(sendAmount),
-      // });
+      await checkAllowance({
+        smartWalletProvider: smartWalletProvider!,
+        walletAddress: smartWalletAddress as `0x${string}`,
+        spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
+        tokenAddress: sendTokenAddress,
+        amount: Number(sendAmount),
+      });
 
       updateTransferSteps({
         isPreviousStepCompleted: true,
         newStep: defaultTransferSteps.transferring,
       });
 
-      // const transferTx = await transfer({
-      //   ecdsaProvider,
-      //   destinationChainId: polygonMumbai.id,
-      //   recipientAddress: destinationAddress,
-      //   tokenAddress: sendTokenAddress,
-      //   amount: Number(inputAmount),
-      // });
+      return;
+
+      const transferTx = await transfer({
+        smartWalletProvider: smartWalletProvider!,
+        destinationChainId: destinationChainId!,
+        recipientAddress: destinationAddress!,
+        tokenAddress: sendTokenAddress,
+        amount: Number(sendAmount),
+      });
 
       updateTransferSteps({ isPreviousStepCompleted: true });
 
@@ -136,40 +159,38 @@ export default function UserInterface() {
           handleModalClose={() => toggleDestinationModal(false)}
         />
       )}
+      {isTokenModalOpen && (
+        <TokenModal
+          currentToken={currentToken}
+          setCurrentToken={setCurrentToken}
+          handleModalClose={() => toggleTokenModal(false)}
+        />
+      )}
 
       <form
         onSubmit={handleSubmit}
-        className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[60%] flex flex-col items-center gap-3"
+        className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[63%] flex flex-col items-center gap-3"
       >
         <LazyMotion features={domAnimation}>
-          <div className="w-full h-full gap-3 flex flex-col items-center">
+          <div className="flex flex-col items-center w-full h-full gap-3">
             <m.div
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
               transition={{ type: "spring", damping: 20, delay: 0 }}
               className="w-full h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
                 <SendInput
                   value={sendAmount}
                   onChange={handleSendAmountChange}
                 />
-                <TokenInput title="GAS" token="Eth" />
-                {/* <ContractProtocolFeeReader
-                  // fromToken={sendTokenAddress}
-                  fromToken={"0x326c977e6efc84e512bb9c30f76e30c160ed06fb"}
-                  // toToken={receiveTokenAddress}
-                  toToken={"0xf1e3a5842eeef51f2967b3f05d45dd4f4205ff40"}
-                  amountFromToken={sendAmount}
-                  // amountToToken={receiveAmount}
-                  amountToToken={1}
-                  // destinationChain={destinationChain}
-                  destinationChain={"16015286601757825753"} //sepolia?
-                /> */}
+                <EstimateCost sendAmount={sendAmount} />
               </div>
-              <div className="w-1/2 h-full py-6 flex flex-col items-center justify-center gap-4">
-                {/* todo: dynamic token input */}
-                <TokenInput title="Token" token="Matic" />
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
+                <TokenInput
+                  token={currentToken}
+                  onClick={() => toggleTokenModal(true)}
+                />
                 <SendNetworkInput />
               </div>
             </m.div>
@@ -181,7 +202,7 @@ export default function UserInterface() {
                 damping: 20,
                 delay: 0.15,
               }}
-              className="w-[85%] h-1/2 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="w-[85%] h-1/3 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
               <DestinationNetworkInput
@@ -189,7 +210,7 @@ export default function UserInterface() {
                 onClick={() => toggleDestinationModal(true)}
               />
 
-              <span className="z-50 absolute -top-8 rotate-180 text-5xl">
+              <span className="absolute z-50 text-5xl rotate-180 -top-8">
                 𐊾
               </span>
             </m.div>
@@ -217,15 +238,6 @@ export default function UserInterface() {
             Submit transfer
           </m.button>
         </LazyMotion>
-
-        {/* {chain?.blockExplorers?.default.url && (
-            <a
-              href={`${chain?.blockExplorers?.default.url}/address/${address}#tokentxnsErc721`}
-              target="_blank"
-            >
-              Block Explorer
-            </a>
-          )} */}
       </form>
     </>
   );

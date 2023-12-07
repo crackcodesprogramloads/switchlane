@@ -1,8 +1,14 @@
 "use client";
 
+import Image from "next/image";
+
 import { useContractRead } from "wagmi";
+import { formatEther } from "viem";
+
 import contractABI from "@/app/abi/Switchlane.json";
-import { ethers } from "ethers";
+import { SWITCHLANE_TRANSFER_CONTRACT_ADDRESS } from "../../constants";
+import { removeExcessDigitsFromString } from "@/app/utils/removeExcessDigitsFromString";
+import PROCESSING from "/public/processing.svg";
 
 interface ContractProtocolFeeReaderProps {
   fromToken: string;
@@ -26,13 +32,6 @@ function ContractProtocolFeeReader({
     amountToToken,
     destinationChain,
   ];
-  // const args = [
-  //   "0x326c977e6efc84e512bb9c30f76e30c160ed06fb",
-  //   "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40",
-  //   1,
-  //   1,
-  //   "16015286601757825753",
-  // ];
 
   const { data, error, isLoading } = useContractRead({
     address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893",
@@ -41,16 +40,30 @@ function ContractProtocolFeeReader({
     args: args,
   });
 
-  // Handle the response
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading)
+    return (
+      <Image
+        className="animate-spin"
+        src={PROCESSING}
+        alt="processing icon"
+        width={28}
+        height={28}
+      />
+    );
+  if (error) {
+    console.log(error.message);
+    return null;
+  }
   if (data) {
-    // @ts-ignore todo: fix type
-    const etherValue = ethers.utils.formatUnits(data, "ether");
-    return <div>Fee: ${etherValue}</div>;
+    const etherValue = formatEther(data as any);
+    const truncatedEtherValue = removeExcessDigitsFromString(etherValue);
+
+    return (
+      <div className="h-full">Sponsored gas: ~{truncatedEtherValue} USD</div>
+    );
   }
 
-  return <div>Waiting for input...</div>;
+  return <div className="h-full">Waiting for input...</div>;
 }
 
 export default ContractProtocolFeeReader;

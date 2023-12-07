@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { DESTINATION_CHAINS } from '@/app/constants';
+import { useState } from 'react';
 
-const DEFAULT_DESTINATION_NETWORK = "Ethereum";
+const DEFAULT_DESTINATION_NETWORK = 'Ethereum';
 
 export default function useDestinationModal() {
   const [destinationNetwork, setDestinationNetwork] = useState(
@@ -18,5 +19,8 @@ export default function useDestinationModal() {
     isDestinationNetworkModalOpen,
     toggleDestinationModal,
     setDestinationNetwork,
+    destinationChainId: DESTINATION_CHAINS.find(
+      (chain) => chain.name.toLowerCase() === destinationNetwork.toLowerCase()
+    )?.id
   };
 }

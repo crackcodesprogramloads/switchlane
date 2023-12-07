@@ -72,3 +72,14 @@ export default function LoadingModal({
     </div>
   ) : null;
 }
+
+{
+  /* {chain?.blockExplorers?.default.url && (
+            <a
+              href={`${chain?.blockExplorers?.default.url}/address/${address}#tokentxnsErc721`}
+              target="_blank"
+            >
+              Block Explorer
+            </a>
+          )} */
+}
