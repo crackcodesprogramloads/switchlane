@@ -6,11 +6,12 @@ import { useSigner } from "./useSigner";
 import { useAccount } from "wagmi";
 import { watchNetwork } from "wagmi/actions";
 import { createContext } from "react";
-import type { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import type { Chain } from "viem";
+import { Alchemy } from "alchemy-sdk";
 
 export const AAWalletProviderContext = createContext<{
-  provider: null | AlchemyProvider;
+  provider: null | (AlchemyProvider & Alchemy);
   smartWalletAddress: string;
 }>({
   provider: null,
@@ -49,8 +50,12 @@ const AAWalletContext = (props: Props) => {
   const connectToAAWallet = useCallback(async () => {
     if (signer && AAWalletProvider) {
       connectProviderToAccount(signer);
-      const smartWalletAddress = await AAWalletProvider.getAddress();
-      setSmartWalletAddress(smartWalletAddress);
+      try {
+        const smartWalletAddress = await AAWalletProvider.getAddress();
+        setSmartWalletAddress(smartWalletAddress);
+      } catch (error: any) {
+        console.error(error.message);
+      }
     }
   }, [signer, connectProviderToAccount, AAWalletProvider]);
 

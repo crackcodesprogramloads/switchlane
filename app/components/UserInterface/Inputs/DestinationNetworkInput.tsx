@@ -5,18 +5,8 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
-import OPTIMISM from "/public/chains/RainbowIcons/Optimism.svg";
-import POLYGON from "/public/chains/RainbowIcons/Polygon.svg";
-import ETHEREUM from "/public/chains/RainbowIcons/Ethereum.svg";
-import BASE from "/public/chains/RainbowIcons/Base.svg";
 import CLOSE_ICON from "/public/close.svg";
-
-const DestinationChains = [
-  { name: "Optimism", icon: OPTIMISM },
-  { name: "Polygon", icon: POLYGON },
-  { name: "Ethereum", icon: ETHEREUM },
-  { name: "Base", icon: BASE },
-];
+import { DESTINATION_CHAINS } from "@/app/constants";
 
 export function DestinationNetworkModal({
   destinationNetwork,
@@ -27,7 +17,7 @@ export function DestinationNetworkModal({
   setDestinationNetwork: Dispatch<SetStateAction<string>>;
   handleModalClose: () => void;
 }) {
-  const DestinationChainOptions = DestinationChains.map((chain, index) => {
+  const DestinationChainOptions = DESTINATION_CHAINS.map((chain, index) => {
     return (
       <button
         onClick={() => setDestinationNetwork(chain.name)}
@@ -85,7 +75,7 @@ function DestinationNetworkInput({
   destinationNetwork: string;
   onClick: () => void;
 }) {
-  const selectedChain = DestinationChains.find(
+  const selectedChain = DESTINATION_CHAINS.find(
     (c) => c.name === destinationNetwork
   );
 
@@ -103,10 +93,10 @@ function DestinationNetworkInput({
               <Image
                 src={selectedChain.icon}
                 alt="chain icon"
-                width={32}
-                height={32}
+                width={35}
+                height={35}
               />
-              <p className="text-3xl font-semibold">{selectedChain.name}</p>
+              <p className="text-3xl">{selectedChain.name}</p>
             </>
           ) : null}
         </button>
