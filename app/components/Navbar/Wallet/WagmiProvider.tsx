@@ -2,16 +2,6 @@
 
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import {
-  polygonMumbai,
-  sepolia,
-  optimismGoerli,
-  // arbitrumGoerli, // todo: only supported on mainnet
-  // avalancheFuji, // todo: not working
-  // bscTestnet, // todo: not working
-  baseGoerli,
-} from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import {
   RainbowKitProvider,
   connectorsForWallets,
   lightTheme,
@@ -30,9 +20,6 @@ export default function WagmiProvider({ children }: { children: ReactNode }) {
   );
 
   const { chains, publicClient } = configureChains(chainsArray, [
-    // alchemyProvider({
-    //   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || "",
-    // }),
     jsonRpcProvider({
       rpc: (c) => {
         const http = chainConfig[c.id]?.rpcUrl;
@@ -47,8 +34,6 @@ export default function WagmiProvider({ children }: { children: ReactNode }) {
         };
       },
     }),
-
-    // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY || "" }),
   ]);
 
   const connectors = connectorsForWallets([
@@ -77,7 +62,7 @@ export default function WagmiProvider({ children }: { children: ReactNode }) {
           darkMode: darkTheme(),
         }}
         chains={chains}
-        modalSize={"compact"}
+        modalSize="compact"
       >
         {children}
       </RainbowKitProvider>

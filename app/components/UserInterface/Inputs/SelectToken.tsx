@@ -6,18 +6,25 @@ import Image from "next/image";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 import CLOSE_ICON from "/public/close.svg";
-import { TOKENS } from "@/app/constants";
 
-export function TokenModal({
+export type TokenOption = {
+  address: string;
+  name: string;
+  icon: string;
+};
+
+export function SelectTokenModal({
+  tokenOptions,
   currentToken,
   setCurrentToken,
   handleModalClose,
 }: {
-  currentToken: any;
-  setCurrentToken: Dispatch<SetStateAction<string>>;
+  tokenOptions: TokenOption[];
+  currentToken?: string;
+  setCurrentToken: Dispatch<SetStateAction<string | undefined>>;
   handleModalClose: () => void;
 }) {
-  const TokenOptions = TOKENS.map((token, index) => {
+  const TokenOptions = tokenOptions.map((token, index) => {
     return (
       <button
         onClick={() => setCurrentToken(token.name)}
@@ -26,7 +33,7 @@ export function TokenModal({
           currentToken === token.name ? "bg-[#3898FF]" : "hover:bg-[#2e3036]"
         }`}
       >
-        <Image src={token.icon} alt="chain icon" width={35} height={35} />
+        <Image src={token.icon} alt="token icon" width={35} height={35} />
         <p className="text-md">{token.name}</p>
       </button>
     );
@@ -64,18 +71,22 @@ export function TokenModal({
   );
 }
 
-function TokenInput({
+function SelectToken({
+  title,
+  tokenOptions,
   token,
   onClick,
 }: {
+  title: string;
+  tokenOptions: TokenOption[];
   token?: string;
   onClick: () => void;
 }) {
-  const selectedToken = TOKENS.find((c) => c.name === token);
+  const selectedToken = tokenOptions.find((c) => c.name === token);
 
   return (
-    <fieldset className="w-full h-1/2 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
-      <legend className="ml-auto mr-auto px-2 text-md">Token</legend>
+    <fieldset className="w-full h-16 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
+      <legend className="ml-auto mr-auto px-2 text-md">{title}</legend>
       <button
         type="button"
         onClick={onClick}
@@ -89,7 +100,7 @@ function TokenInput({
               width={35}
               height={35}
             />
-            <p className="text-3xl">{selectedToken.name}</p>
+            <p className="text-3xl font-light">{selectedToken.name}</p>
           </>
         ) : null}
       </button>
@@ -97,6 +108,6 @@ function TokenInput({
   );
 }
 
-export default dynamic(() => Promise.resolve(TokenInput), {
+export default dynamic(() => Promise.resolve(SelectToken), {
   ssr: false,
 });

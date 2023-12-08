@@ -1,23 +1,30 @@
-import { TOKENS } from "@/app/constants";
+import { TokenOption } from "@/app/components/UserInterface/Inputs/SelectToken";
 import { useState } from "react";
 
-const DEFAULT_TOKEN = "Ethereum";
-
-export default function useTokenModal() {
-  const [currentToken, setCurrentToken] = useState(DEFAULT_TOKEN);
-  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+export default function useTokenModal({
+  tokenOptions,
+  defaultToken,
+}: {
+  tokenOptions: TokenOption[];
+  defaultToken?: string;
+}) {
+  const [selectedToken, setSelectedToken] = useState(defaultToken);
+  const [isSelectModalOpen, setIsSelectModalOpen] = useState(false);
 
   function toggleTokenModal(isOpen: boolean) {
-    setIsTokenModalOpen(isOpen);
+    setIsSelectModalOpen(isOpen);
   }
 
+  const selectedTokenWithDefault = selectedToken || tokenOptions[0]?.name;
+
   return {
-    currentToken,
-    isTokenModalOpen,
+    selectedToken: selectedTokenWithDefault,
+    isSelectModalOpen,
     toggleTokenModal,
-    setCurrentToken,
-    tokenAddress: TOKENS.find(
-      (token) => token.name.toLowerCase() === currentToken.toLowerCase()
+    setSelectedToken,
+    tokenAddress: tokenOptions?.find(
+      (token) =>
+        token.name.toLowerCase() === selectedTokenWithDefault?.toLowerCase()
     )?.address,
   };
 }

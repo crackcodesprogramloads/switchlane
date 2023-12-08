@@ -47,7 +47,7 @@ export default function WalletButton() {
                 return (
                   <div className="flex gap-12">
                     <button
-                      className="py-2 px-4 border-2 border-zinc-200 rounded-full flex flex-row items-center"
+                      className="py-2 px-4 border-[1.5px] border-zinc-200 rounded-full flex flex-row items-center font-normal"
                       onClick={openChainModal}
                       type="button"
                     >
