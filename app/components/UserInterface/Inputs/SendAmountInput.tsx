@@ -8,7 +8,7 @@ export default function SendInput({
   onChange?: (e: any) => void;
 }) {
   return (
-    <fieldset className="w-full h-1/2 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
+    <fieldset className="w-full h-16 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
       <legend className="ml-auto mr-auto px-2 text-md">Send</legend>
       <span className="w-full flex flex-row items-center justify-between">
         <button className="w-1/4 h-3/4 px-auto py-auto text-zinc-200 text-md border rounded-lg">

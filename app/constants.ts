@@ -9,7 +9,7 @@ import OPTIMISM from "/public/chains/RainbowIcons/Optimism.svg";
 import POLYGON from "/public/chains/RainbowIcons/Polygon.svg";
 import ETHEREUM from "/public/chains/RainbowIcons/Ethereum.svg";
 import BASE from "/public/chains/RainbowIcons/Base.svg";
-import TEST_TOKEN from "/public/chains/RainbowIcons/Base.svg";
+import TEST_TOKEN from "/public/tokens/TestToken.svg";
 
 export const MATIC_TOKEN_ADDRESS = "0x0000000000000000000000000000000000001010"; // MATIC, NOT WORKING!? ISN'T MATIC AN ERC20!?
 
@@ -28,14 +28,10 @@ export const DESTINATION_CHAINS = [
   { id: baseGoerli.id, name: "Base", icon: BASE },
 ];
 
-export const TOKENS = [
+export const TO_TOKEN_OPTIONS = [
   {
-    address: "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
-    name: "Test ERC20",
+    address: "0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05", // Sepolia
+    name: "CCIP-BnM",
     icon: TEST_TOKEN,
   },
-  { address: "", name: "Optimism", icon: OPTIMISM },
-  { address: "", name: "Polygon", icon: POLYGON },
-  { address: "", name: "Ethereum", icon: ETHEREUM },
-  { address: "", name: "Base", icon: BASE },
 ];

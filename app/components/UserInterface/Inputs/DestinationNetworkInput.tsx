@@ -81,8 +81,8 @@ function DestinationNetworkInput({
 
   return (
     <>
-      <fieldset className="w-full h-[60%] flex items-center text-zinc-200 border-dashed border-t border-gray-600 ">
-        <legend className="ml-auto mr-auto px-2 text-md">Network</legend>
+      <fieldset className="w-full h-16 flex items-center text-zinc-200 border-dashed border-t border-gray-600 ">
+        <legend className="ml-auto mr-auto px-2 text-md">To Network</legend>
         <button
           type="button"
           onClick={onClick}
@@ -96,7 +96,7 @@ function DestinationNetworkInput({
                 width={35}
                 height={35}
               />
-              <p className="text-3xl">{selectedChain.name}</p>
+              <p className="text-3xl font-light">{selectedChain.name}</p>
             </>
           ) : null}
         </button>

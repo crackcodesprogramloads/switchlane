@@ -7,7 +7,7 @@ export default function ReceiveInput({ value }: { value: string }) {
   const balanceSymbol = "matic"; // hardcoded value
 
   return (
-    <fieldset className="w-full h-[60%] px-2 flex flex-col items-center justify-around text-zinc-200 border-dashed border-t border-gray-600">
+    <fieldset className="w-full h-16 px-2 flex flex-col items-center justify-around text-zinc-200 border-dashed border-t border-gray-600">
       <legend className="ml-auto mr-auto px-2 text-lg">Receive</legend>
 
       <input

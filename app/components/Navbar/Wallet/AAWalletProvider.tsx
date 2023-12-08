@@ -34,9 +34,9 @@ const AAWalletContext = (props: Props) => {
     const isSupportedChain = chains.some((c) => {
       return c.id === chain?.id;
     });
-    if (!isSupportedChain) {
-      return;
-    }
+
+    if (!chain || !isSupportedChain) return;
+
     disconnectProviderFromAccount(); // Disconnect to force reconnect with new chain
     setCurrentChain(chain);
   });

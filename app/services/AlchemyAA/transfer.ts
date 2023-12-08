@@ -62,24 +62,43 @@ export async function checkAllowance({
 
 export async function transfer({
   smartWalletProvider,
+  walletAddress,
   destinationChainId,
   recipientAddress,
   tokenAddress,
   amount,
 }: {
   smartWalletProvider: AlchemyProvider & Alchemy;
+  walletAddress: string;
   destinationChainId: number;
   recipientAddress: string;
   tokenAddress: `0x${string}`;
   amount: number;
 }) {
+  // function switchlaneExactInput(
+  //   address sender,
+  //   address receiver,
+  //   address fromToken,
+  //   address toToken,
+  //   uint64 destinationChain,
+  //   uint256 amount,
+  //   uint256 minimumReceiveAmount
+
   const { hash } = await smartWalletProvider.sendUserOperation({
     target: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
     data: encodeFunctionData({
       abi: ERC20Abi,
-      // _transferTokens(uint64 _destinationChainSelector, address _receiver, address _token, uint256 _amount)
-      functionName: "_transferTokens",
-      args: [destinationChainId, recipientAddress, tokenAddress, amount],
+      functionName: "switchlaneExactInput",
+
+      args: [
+        walletAddress,
+        recipientAddress,
+        tokenAddress, // fromTokenAddress
+        tokenAddress, // toTokenAddress
+        destinationChainId, // toNetwork
+        amount,
+        // minimumReceiveAmount
+      ],
     }),
   });
 

@@ -10,12 +10,12 @@ import { SWITCHLANE_TRANSFER_CONTRACT_ADDRESS } from "../../constants";
 import { removeExcessDigitsFromString } from "@/app/utils/removeExcessDigitsFromString";
 import PROCESSING from "/public/processing.svg";
 
-interface ContractProtocolFeeReaderProps {
+export interface ContractProtocolFeeReaderProps {
   fromToken: string;
   toToken: string;
-  amountFromToken: number | string; // Use 'bigint' if dealing with very large numbers
-  amountToToken: number | string; // Use 'bigint' if dealing with very large numbers
-  destinationChain: number | string;
+  amountFromToken: bigint;
+  amountToToken: bigint;
+  destinationChain: number;
 }
 
 function ContractProtocolFeeReader({
@@ -33,11 +33,14 @@ function ContractProtocolFeeReader({
     destinationChain,
   ];
 
+  console.log({ args });
+
   const { data, error, isLoading } = useContractRead({
-    address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893",
-    abi: contractABI.abi as any,
+    address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
+    abi: contractABI.abi,
     functionName: "calculateProtocolFees",
     args: args,
+    enabled: args.every((arg) => Boolean(arg)),
   });
 
   if (isLoading)

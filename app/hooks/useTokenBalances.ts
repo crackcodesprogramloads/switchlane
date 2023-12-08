@@ -2,14 +2,14 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { AAWalletProviderContext } from "../components/Navbar/Wallet/AAWalletProvider";
 import { TokenBalance } from "alchemy-sdk";
 
-export default function useTokenBalances() {
+export default function useTokenBalances({ enabled }: { enabled?: boolean }) {
   const { provider, smartWalletAddress } = useContext(AAWalletProviderContext);
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
   const getSmartWalletTokenBalances = useCallback(async () => {
-    if (provider && smartWalletAddress) {
+    if (smartWalletAddress && provider) {
       try {
         setIsLoading(true);
         const { tokenBalances } = await provider.core.getTokenBalances(
@@ -26,8 +26,15 @@ export default function useTokenBalances() {
   }, [provider, smartWalletAddress]);
 
   useEffect(() => {
-    getSmartWalletTokenBalances();
-  }, [getSmartWalletTokenBalances]);
+    if (enabled !== false && provider) {
+      getSmartWalletTokenBalances();
+    }
+  }, [enabled, getSmartWalletTokenBalances, provider]);
 
-  return { data: tokenBalances, error, isLoading, isError: Boolean(error) };
+  return {
+    data: tokenBalances,
+    error: error,
+    isLoading: isLoading,
+    isError: Boolean(error),
+  };
 }

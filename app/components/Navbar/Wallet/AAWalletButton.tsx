@@ -23,14 +23,17 @@ export default function AAWalletButton() {
   const secondSectionAddress = smartWalletAddress.slice(37, 42);
 
   const { data, isError, isLoading } = useBalance({
-    address: "0xe01F3A01cB443BDCcDF0B8353ffb9bD558EFDaE8",
+    address: smartWalletAddress as `0x${string}`,
+    enabled: Boolean(smartWalletAddress) && smartWalletOpen,
   });
 
   const {
     data: tokenBalances,
     isError: isTokenBalancesError,
     isLoading: isTokenBalancesLoading,
-  } = useTokenBalances();
+  } = useTokenBalances({
+    enabled: Boolean(smartWalletAddress) && smartWalletOpen,
+  });
 
   function handleSmartWalletOpen() {
     setSmartWalletOpen((prevState) => !prevState);
@@ -58,16 +61,7 @@ export default function AAWalletButton() {
                 (!authenticationStatus ||
                   authenticationStatus === "authenticated");
               return (
-                <div
-                  {...(!ready && {
-                    "aria-hidden": true,
-                    style: {
-                      opacity: 0,
-                      pointerEvents: "none",
-                      userSelect: "none",
-                    },
-                  })}
-                >
+                <div>
                   {(() => {
                     if (!connected) {
                       return null;
@@ -79,7 +73,7 @@ export default function AAWalletButton() {
                       <button
                         onClick={handleSmartWalletOpen}
                         type="button"
-                        className="py-2 px-4 border-2 border-zinc-200 rounded-full flex flex-row items-center"
+                        className="py-2 px-4 border-[1.5px] border-zinc-200 rounded-full flex flex-row items-center font-normal"
                       >
                         Smart Wallet
                       </button>
@@ -93,14 +87,14 @@ export default function AAWalletButton() {
       </LazyMotion>
 
       {smartWalletOpen && (
-        <div className="z-50 fixed top-6 right-8 px-10 py-8 flex flex-col items-center justify-center gap-2 border border-gray-600 rounded-lg bg-gray-950">
+        <div className="z-50 fixed top-6 right-8 px-10 py-8 flex flex-col items-center justify-center gap-2 border border-gray-600 rounded-lg bg-gradient-to-b from-gray-950 via-gray-950 to-gray-900">
           <div
             onClick={handleSmartWalletOpen}
             className="fixed top-8 right-12 cursor-pointer"
           >
             X
           </div>
-          <h1 className="text-2xl text-white">Your Smart Wallet</h1>
+          <h1 className="text-2xl text-white font-medium">Your Smart Wallet</h1>
           <span className="py-2 w-full flex flex-col items-center border-b border-dotted">
             <span className="flex flex-row gap-2">
               <p className="text-md">
