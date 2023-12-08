@@ -202,7 +202,7 @@ export default function UserInterface() {
                 damping: 20,
                 delay: 0.15,
               }}
-              className="w-[85%] h-1/3 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="relative w-[85%] h-1/3 px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <ReceiveInput value={sendAmount} />
               <DestinationNetworkInput
@@ -233,7 +233,7 @@ export default function UserInterface() {
               damping: 20,
               delay: 0.45,
             }}
-            className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+            className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold rounded-lg border-l border-t border-gray-400 hover:border-gray-300 shadow-[0px_0px_50px] shadow-sky-700/70 bg-gradient-to-b from-gray-950 to-gray-600"
           >
             Submit transfer
           </m.button>
