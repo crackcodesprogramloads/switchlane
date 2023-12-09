@@ -48,7 +48,7 @@ export function SelectTokenModal({
 
   return (
     <div
-      className="z-50 fixed w-full h-[60%] bg-gray-950/70 backdrop-blur-sm flex flex-col items-center justify-center"
+      className="z-50 fixed w-full h-screen bg-gray-950/70 flex flex-col items-center justify-center"
       onClick={handleModalClose}
     >
       <LazyMotion features={domAnimation}>
@@ -92,7 +92,7 @@ function SelectToken({
   const selectedToken = tokenOptions.find((c) => c.name === token);
 
   return (
-    <fieldset className="w-full h-16 flex items-center justify-center text-zinc-200 border-dashed border-t border-gray-600">
+    <fieldset className="w-full h-[68px] flex items-center justify-center text-zinc-200 border-dashed border-t border-gray-600">
       <legend className="ml-auto mr-auto px-2 text-lg">{title}</legend>
       {selectedToken ? (
         <button
@@ -106,7 +106,7 @@ function SelectToken({
             width={35}
             height={35}
           />
-          <p className="text-3xl font-light">{selectedToken.name}</p>
+          <p className="text-[28px] font-light">{selectedToken.name}</p>
         </button>
       ) : (
         <Image

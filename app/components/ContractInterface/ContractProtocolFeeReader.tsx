@@ -33,8 +33,8 @@ function ContractProtocolFeeReader({
   ];
 
   const { data, error, isLoading } = useContractRead({
-    // address: "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
-    address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
+    // address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893",
+    address: "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13",
     abi: contractABI,
     functionName: "calculateProtocolFees",
     args: args,
@@ -60,8 +60,9 @@ function ContractProtocolFeeReader({
     const truncatedEtherValue = removeExcessDigitsFromString(etherValue);
 
     return (
-      <div className="h-full">
-        FEE Sponsored gas: ~{truncatedEtherValue} USD
+      <div className="h-full flex flex-col items-center text-[18px]">
+        <p>Sponsored gas fee</p>
+        <p>~{truncatedEtherValue} USD</p>
       </div>
     );
   }

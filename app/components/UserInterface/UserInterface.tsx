@@ -37,6 +37,7 @@ import useTokenBalances from "@/app/hooks/useTokenBalances";
 import useTokenMetadata from "@/app/hooks/useTokenMetadata";
 
 import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
+import TempInput from "./Inputs/TempInput";
 
 export default function UserInterface() {
   const { provider: smartWalletProvider, smartWalletAddress } = useContext(
@@ -221,6 +222,7 @@ export default function UserInterface() {
 
       <form
         onSubmit={handleSubmit}
+        autoComplete="off"
         className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[63%] flex flex-col items-center gap-3"
       >
         <LazyMotion features={domAnimation}>
@@ -229,10 +231,12 @@ export default function UserInterface() {
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
               transition={{ type: "spring", damping: 20, delay: 0 }}
-              className="w-full px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="w-full h-[50%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
                 <SendInput
+                  smartWalletAddress={smartWalletAddress}
+                  fromTokenAddress={selectedFromTokenAddress}
                   value={sendAmount}
                   onChange={handleSendAmountChange}
                 />
@@ -244,7 +248,7 @@ export default function UserInterface() {
                   destinationChain={destinationChainId}
                 />
               </div>
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
                 <SelectToken
                   title="From Token"
                   tokenOptions={fromTokenOptions}
@@ -262,9 +266,9 @@ export default function UserInterface() {
                 damping: 20,
                 delay: 0.15,
               }}
-              className="relative w-[85%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="relative w-[85%] h-[40%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
                 <ReceiveInput
                   fromToken={selectedFromTokenAddress}
                   toToken={selectedToTokenAddress}
@@ -272,15 +276,9 @@ export default function UserInterface() {
                   fromAmount={Number(parseEther(sendAmount))}
                   destinationChain={destinationChainId as string | number}
                 />
-                <ReceiveInput
-                  fromToken={selectedFromTokenAddress}
-                  toToken={selectedToTokenAddress}
-                  maxTolerance={5000}
-                  fromAmount={Number(parseEther(sendAmount))}
-                  destinationChain={destinationChainId as string | number}
-                />
+                <TempInput />
               </div>
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
                 <SelectToken
                   title="To Token"
                   tokenOptions={TO_TOKEN_OPTIONS}

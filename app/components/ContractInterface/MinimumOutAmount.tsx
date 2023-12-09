@@ -50,7 +50,7 @@ function MinimumOutAmount({
     const etherValue = formatEther(data as any);
     const truncatedEtherValue = removeExcessDigitsFromString(etherValue);
 
-    return <p className="h-full text-xl">Minimum ~ {truncatedEtherValue}</p>;
+    return <p className="h-full text-xl">Minimum ~{truncatedEtherValue}</p>;
   }
 
   return <p className="h-full text-xl">Waiting for input...</p>;
