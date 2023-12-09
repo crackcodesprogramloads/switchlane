@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { AlchemyProvider, SupportedChains } from "@alchemy/aa-alchemy";
+
 import {
   LightSmartContractAccount,
   getDefaultLightAccountFactoryAddress,
@@ -15,6 +16,7 @@ import { Alchemy } from "alchemy-sdk";
 import { Address } from "viem";
 import type { Chain } from "viem";
 import { chainConfig } from "@/app/services/AlchemyAA/chainConfig";
+import { arbitrumSepolia, sepolia } from "viem/chains";
 
 export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
   const [provider, setProvider] = useState<(AlchemyProvider & Alchemy) | null>(
@@ -44,6 +46,12 @@ export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
       setProvider(provider);
     }
   }, [chain]);
+
+  // eth mainnet
+  const arb = SupportedChains.get(421614);
+  const sep = SupportedChains.get(11155111);
+
+  // console.log({ arb, sep });
 
   // create a new AA wallet address if it doesn't exist, retrieve the aa wallet address if it exists
   const connectProviderToAccount = useCallback(

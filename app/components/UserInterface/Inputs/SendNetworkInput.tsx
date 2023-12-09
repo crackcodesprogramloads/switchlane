@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { ConnectButton, useChainModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
+import ARBITRUM from "/public/chains/RainbowIcons/Arbitrum.svg";
 
 function SendNetworkInput() {
   const { openChainModal } = useChainModal();
@@ -23,20 +24,29 @@ function SendNetworkInput() {
       <ConnectButton.Custom>
         {({ chain }) => {
           if (!chain) return <></>;
+
+          const icon =
+            chain.hasIcon && chain.iconUrl ? (
+              <Image
+                width={35}
+                height={35}
+                alt={chain.name ?? "Chain icon"}
+                src={chain.iconUrl}
+              />
+            ) : (
+              <Image
+                width={35}
+                height={35}
+                alt="Arbitrum icon"
+                src={ARBITRUM}
+              />
+            );
+
           return (
-            chain.hasIcon && (
-              <span className="w-full h-full flex flex-row items-center justify-center gap-4 text-3xl font-light cursor-pointer">
-                {chain.iconUrl && (
-                  <Image
-                    width={35}
-                    height={35}
-                    alt={chain.name ?? "Chain icon"}
-                    src={chain.iconUrl}
-                  />
-                )}
-                {chain.name ? removeSecondWord(chain.name) : ""}
-              </span>
-            )
+            <span className="w-full h-full flex flex-row items-center justify-center gap-4 text-3xl font-light cursor-pointer">
+              {icon}
+              {chain.name ? removeSecondWord(chain.name) : ""}
+            </span>
           );
         }}
       </ConnectButton.Custom>

@@ -4,6 +4,7 @@ import {
   optimismGoerli,
   polygonMumbai,
   sepolia,
+  arbitrumSepolia,
   type Chain,
 } from "viem/chains";
 
@@ -29,6 +30,22 @@ export const chainConfig: Record<number, ChainConfig> = {
     rpcUrl: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY}`,
     network: Network.ETH_SEPOLIA,
     apiKey: process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY || "",
+  },
+  [arbitrumSepolia.id]: {
+    gasManagerPolicyId: process.env.NEXT_PUBLIC_ARB_SEPOLIA_POLICY_ID || "",
+    chain: {
+      ...arbitrumSepolia,
+      rpcUrls: {
+        ...arbitrumSepolia.rpcUrls,
+        alchemy: {
+          http: ["https://arb-sepolia.g.alchemy.com/v2"],
+          webSocket: ["wss://arb-sepolia.g.alchemy.com/v2"],
+        },
+      },
+    },
+    rpcUrl: `https://arb-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ARB_SEPOLIA_API_KEY}`,
+    network: Network.ARB_SEPOLIA,
+    apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ARB_SEPOLIA_API_KEY || "",
   },
   [optimismGoerli.id]: {
     gasManagerPolicyId: process.env.NEXT_PUBLIC_OPT_GOERLI_POLICY_ID || "",
