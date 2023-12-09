@@ -6,6 +6,7 @@ import Image from "next/image";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 import CLOSE_ICON from "/public/close.svg";
+import PROCESSING from "/public/processing.svg";
 
 export type TokenOption = {
   address: string;
@@ -33,7 +34,13 @@ export function SelectTokenModal({
           currentToken === token.name ? "bg-[#3898FF]" : "hover:bg-[#2e3036]"
         }`}
       >
-        <Image src={token.icon} alt="token icon" width={35} height={35} />
+        <Image
+          priority
+          src={token.icon}
+          alt="token icon"
+          width={35}
+          height={35}
+        />
         <p className="text-md">{token.name}</p>
       </button>
     );
@@ -85,25 +92,31 @@ function SelectToken({
   const selectedToken = tokenOptions.find((c) => c.name === token);
 
   return (
-    <fieldset className="w-full h-16 flex items-center text-zinc-200 border-dashed border-t border-gray-600">
-      <legend className="ml-auto mr-auto px-2 text-md">{title}</legend>
-      <button
-        type="button"
-        onClick={onClick}
-        className="w-full h-full flex flex-row items-center justify-center gap-4"
-      >
-        {selectedToken ? (
-          <>
-            <Image
-              src={selectedToken.icon}
-              alt="token icon"
-              width={35}
-              height={35}
-            />
-            <p className="text-3xl font-light">{selectedToken.name}</p>
-          </>
-        ) : null}
-      </button>
+    <fieldset className="w-full h-16 flex items-center justify-center text-zinc-200 border-dashed border-t border-gray-600">
+      <legend className="ml-auto mr-auto px-2 text-lg">{title}</legend>
+      {selectedToken ? (
+        <button
+          type="button"
+          onClick={onClick}
+          className="w-full h-full flex flex-row items-center justify-center gap-4"
+        >
+          <Image
+            src={selectedToken.icon}
+            alt="token icon"
+            width={35}
+            height={35}
+          />
+          <p className="text-3xl font-light">{selectedToken.name}</p>
+        </button>
+      ) : (
+        <Image
+          className="animate-spin"
+          src={PROCESSING}
+          alt="processing icon"
+          width={28}
+          height={28}
+        />
+      )}
     </fieldset>
   );
 }

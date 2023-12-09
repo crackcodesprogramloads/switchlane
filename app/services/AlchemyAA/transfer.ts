@@ -26,9 +26,6 @@ export async function approveTransaction({
     }),
   });
 
-  console.log({ tokenAddress });
-  console.log({ amount });
-
   const txHash = await smartWalletProvider.waitForUserOperationTransaction(
     hash as `0x${string}`
   );
@@ -56,9 +53,6 @@ export async function checkAllowance({
     args: [walletAddress, spender],
   });
 
-  console.log({ walletAddress });
-  console.log({ spender });
-
   const allowanceAmount = Number(formatEther(data as bigint));
 
   if (allowanceAmount !== amount) {
@@ -76,8 +70,8 @@ export async function transfer({
     fromToken,
     toToken,
     destinationChain,
-    amount,
-    minimumReceiveAmount,
+    fromAmount,
+    maxTolerance,
   },
 }: {
   smartWalletProvider: AlchemyProvider & Alchemy;
@@ -86,29 +80,31 @@ export async function transfer({
     receiver: string;
     fromToken: string;
     toToken: string;
-    destinationChain: number;
-    amount: number;
-    minimumReceiveAmount: number;
+    destinationChain: string | number;
+    fromAmount: number;
+    maxTolerance: number;
   };
 }) {
-  // function switchlaneExactInput(
-  //   address sender, who?
-  //   address receiver,
-  //   address fromToken,
-  //   address toToken,
-  //   uint64 destinationChain,
-  //   uint256 amount,
-  //   uint256 minimumReceiveAmount
-
   console.log({
     sender,
     receiver,
     fromToken,
     toToken,
     destinationChain,
-    amount,
-    minimumReceiveAmount,
+    fromAmount,
+    maxTolerance,
   });
+
+  return;
+
+  const minimumReceiveAmount = await readContract({
+    address: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
+    abi: SWITCHLANE_ABI,
+    functionName: "calculateMinimumOutAmount",
+    args: [fromToken, toToken, maxTolerance, fromAmount, destinationChain],
+  });
+
+  console.log({ minimumReceiveAmount }, typeof minimumReceiveAmount);
 
   const { hash } = await smartWalletProvider.sendUserOperation({
     target: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
@@ -122,7 +118,7 @@ export async function transfer({
         fromToken,
         toToken,
         destinationChain,
-        amount,
+        fromAmount,
         minimumReceiveAmount,
       ],
     }),

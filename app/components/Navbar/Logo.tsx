@@ -17,8 +17,9 @@ export default function Logo() {
         }}
         className="flex flex-row items-end"
       >
-        <Image src={LogoIcon} alt="logo" width={40} height={40} />
+        <Image priority src={LogoIcon} alt="logo" width={40} height={40} />
         <Image
+          priority
           className="translate-y-2 -translate-x-5 transform -scale-x-100"
           src={LogoIcon}
           alt="logo"

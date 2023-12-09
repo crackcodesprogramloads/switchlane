@@ -21,7 +21,6 @@ export default function useTokenMetadata({
           return await provider.core.getTokenMetadata(tokenAddress);
         })
       );
-      console.log({ data });
       setTokenMetaData(data);
     }
   }, [provider, tokenAddresses]);

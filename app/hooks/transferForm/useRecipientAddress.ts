@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AAWalletProviderContext } from "@/app/components/Navbar/Wallet/AAWalletProvider";
 import { useAccount } from "wagmi";
 
 export default function useRecipientAddress() {
   const [isSenderRecipient, setIsSenderRecipient] = useState(true);
   const [recipientAddress, setRecipientAddress] = useState("");
 
-  const { address } = useAccount();
+  const { address } = useAccount(); // EOA
+  const { smartWalletAddress } = useContext(AAWalletProviderContext); // Smart wallet
 
   function toggleIsSenderRecipient() {
     setIsSenderRecipient((prevState) => !prevState);
@@ -21,6 +23,8 @@ export default function useRecipientAddress() {
     recipientAddress,
     toggleIsSenderRecipient,
     handleRecipientAddress,
-    destinationAddress: isSenderRecipient ? address : recipientAddress,
+    destinationAddress: isSenderRecipient
+      ? smartWalletAddress
+      : recipientAddress,
   };
 }

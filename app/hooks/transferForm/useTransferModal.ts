@@ -29,7 +29,7 @@ export default function useTransferModal() {
     newStep?: string;
   }) {
     setTransferSteps((prev) => {
-      if (isPreviousStepCompleted) {
+      if (isPreviousStepCompleted && prev[prev.length - 1]?.status) {
         prev[prev.length - 1].status = "completed";
       }
 
@@ -46,6 +46,7 @@ export default function useTransferModal() {
   }
 
   function handleTransferError(error: any) {
+    console.log("error: ", error.message);
     setTransferSteps((prev) => {
       prev[prev.length - 1].status = "error";
       let customErrorMessage = error.message;
