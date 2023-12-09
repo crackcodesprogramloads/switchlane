@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 import {
   approveTransaction,
@@ -26,7 +26,7 @@ import DestinationNetworkInput, {
 import AddressInput from "./Inputs/AddressInput";
 import LoadingModal from "../LoadingModal";
 import { AAWalletProviderContext } from "../Navbar/Wallet/AAWalletProvider";
-import EstimateCost from "./EstimateCost";
+import EstimateCost from "./CostEstimate";
 
 import useFormattedSendAmount from "@/app/hooks/transferForm/useFormattedSendAmount";
 import useTokenModal from "@/app/hooks/transferForm/useTokenModal";
@@ -171,29 +171,21 @@ export default function UserInterface() {
       const transferTx = await transfer({
         smartWalletProvider: smartWalletProvider!,
         transferArgs: {
+          maxTolerance: 5000,
           sender: smartWalletAddress,
           receiver: destinationAddress!,
           fromToken: selectedFromTokenAddress!,
           toToken: selectedToTokenAddress!,
-          destinationChain: 16015286601757825753,
-          amount: Number(sendAmount),
-          minimumReceiveAmount: 2,
+          destinationChain: destinationChainId as string | number,
+          fromAmount: Number(parseEther(sendAmount)),
         },
       });
 
       updateTransferSteps({ isPreviousStepCompleted: true });
-
-      // reset();
     } catch (error: any) {
       handleTransferError(error);
     }
   }
-
-  // function reset() {
-  //   setInputAmount(0);
-  //   setReceiveEstimate(0);
-  //   setSendTokenAddress(DUMMY_ERC20_TOKEN_ADDRESS);
-  // }
 
   return (
     <>
@@ -273,20 +265,19 @@ export default function UserInterface() {
               className="relative w-[85%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
-                {/* <ReceiveInput value={sendAmount} /> */}
                 <ReceiveInput
-                  fromToken={"0x02C5549fC884Ef24553202AbEdB9876eCfB171aD"}
-                  toToken={"0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40"}
+                  fromToken={selectedFromTokenAddress}
+                  toToken={selectedToTokenAddress}
                   maxTolerance={5000}
-                  toAmount={2e18}
-                  destinationChain={"16015286601757825753"}
+                  fromAmount={Number(parseEther(sendAmount))}
+                  destinationChain={destinationChainId as string | number}
                 />
-                <ContractProtocolFeeReader
-                  fromToken={"0x02C5549fC884Ef24553202AbEdB9876eCfB171aD"}
-                  toToken={"0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40"}
-                  amountFromToken={"12" as any}
-                  amountToToken={3333 as any}
-                  destinationChain={"16015286601757825753"}
+                <ReceiveInput
+                  fromToken={selectedFromTokenAddress}
+                  toToken={selectedToTokenAddress}
+                  maxTolerance={5000}
+                  fromAmount={Number(parseEther(sendAmount))}
+                  destinationChain={destinationChainId as string | number}
                 />
               </div>
               <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">

@@ -19,7 +19,7 @@ function SendNetworkInput() {
       onClick={openChainModal}
       className="w-full h-16 flex items-center text-zinc-200 border-dashed border-t border-gray-600"
     >
-      <legend className="ml-auto mr-auto px-2 text-md">From Network</legend>
+      <legend className="ml-auto mr-auto px-2 text-lg">From Network</legend>
       <ConnectButton.Custom>
         {({ chain }) => {
           if (!chain) return <></>;
