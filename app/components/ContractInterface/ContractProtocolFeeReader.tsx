@@ -6,7 +6,6 @@ import { useContractRead } from "wagmi";
 import { formatEther } from "viem";
 
 import contractABI from "@/app/abi/Switchlane.json";
-import { SWITCHLANE_TRANSFER_CONTRACT_ADDRESS } from "../../constants";
 import { removeExcessDigitsFromString } from "@/app/utils/removeExcessDigitsFromString";
 import PROCESSING from "/public/processing.svg";
 
@@ -15,7 +14,7 @@ export interface ContractProtocolFeeReaderProps {
   toToken: string;
   amountFromToken: bigint;
   amountToToken: bigint;
-  destinationChain: number;
+  destinationChain: string | number;
 }
 
 function ContractProtocolFeeReader({
@@ -34,6 +33,7 @@ function ContractProtocolFeeReader({
   ];
 
   const { data, error, isLoading } = useContractRead({
+    // address: "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
     address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
     abi: contractABI,
     functionName: "calculateProtocolFees",
@@ -60,7 +60,9 @@ function ContractProtocolFeeReader({
     const truncatedEtherValue = removeExcessDigitsFromString(etherValue);
 
     return (
-      <div className="h-full">Sponsored gas: ~{truncatedEtherValue} USD</div>
+      <div className="h-full">
+        FEE Sponsored gas: ~{truncatedEtherValue} USD
+      </div>
     );
   }
 

@@ -36,6 +36,8 @@ import useTransferModal from "@/app/hooks/transferForm/useTransferModal";
 import useTokenBalances from "@/app/hooks/useTokenBalances";
 import useTokenMetadata from "@/app/hooks/useTokenMetadata";
 
+import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
+
 export default function UserInterface() {
   const { provider: smartWalletProvider, smartWalletAddress } = useContext(
     AAWalletProviderContext
@@ -271,7 +273,21 @@ export default function UserInterface() {
               className="relative w-[85%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
-                <ReceiveInput value={sendAmount} />
+                {/* <ReceiveInput value={sendAmount} /> */}
+                <ReceiveInput
+                  fromToken={"0x02C5549fC884Ef24553202AbEdB9876eCfB171aD"}
+                  toToken={"0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40"}
+                  maxTolerance={5000}
+                  toAmount={2e18}
+                  destinationChain={"16015286601757825753"}
+                />
+                <ContractProtocolFeeReader
+                  fromToken={"0x02C5549fC884Ef24553202AbEdB9876eCfB171aD"}
+                  toToken={"0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40"}
+                  amountFromToken={"12" as any}
+                  amountToToken={3333 as any}
+                  destinationChain={"16015286601757825753"}
+                />
               </div>
               <div className="flex flex-col items-center justify-center w-1/2 h-full gap-4 py-6">
                 <SelectToken
