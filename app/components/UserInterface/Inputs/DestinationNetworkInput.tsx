@@ -36,7 +36,7 @@ export function DestinationNetworkModal({
 
   return (
     <div
-      className="z-50 fixed w-full h-[60%] bg-gray-950/70 backdrop-blur-sm flex flex-col items-center justify-center"
+      className="z-50 fixed w-full h-screen bg-gray-950/70 flex flex-col items-center justify-center"
       onClick={handleModalClose}
     >
       <LazyMotion features={domAnimation}>

@@ -115,8 +115,11 @@ export default function AAWalletButton() {
           ) : isError ? (
             <div>Error fetching balance</div>
           ) : (
-            <div>
-              {data?.formatted} {data?.symbol}
+            <div className="w-full">
+              <div className="flex flex-row justify-between">
+                <p>{data?.symbol}</p>
+                <p> {data?.formatted}</p>
+              </div>
               <div>
                 {tokenBalances?.map((bal) => (
                   <TokenBalanceDisplay
@@ -159,8 +162,9 @@ function TokenBalanceDisplay({
   }
 
   return (
-    <div>
-      {balance?.formatted} {balance?.symbol}
+    <div className="flex flex-row justify-between">
+      <p> {balance?.symbol}</p>
+      <p>{balance?.formatted}</p>
     </div>
   );
 }
