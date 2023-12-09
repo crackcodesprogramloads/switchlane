@@ -6,7 +6,6 @@ import { useContractRead } from "wagmi";
 import { formatEther } from "viem";
 
 import contractABI from "@/app/abi/Switchlane.json";
-import { SWITCHLANE_TRANSFER_CONTRACT_ADDRESS } from "../../constants";
 import { removeExcessDigitsFromString } from "@/app/utils/removeExcessDigitsFromString";
 import PROCESSING from "/public/processing.svg";
 

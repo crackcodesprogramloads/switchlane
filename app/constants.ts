@@ -14,7 +14,6 @@ import TEST_TOKEN from "/public/tokens/TestToken.svg";
 export const SWITCHLANE_TRANSFER_CONTRACT_ADDRESS =
   "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13";
 
-// TESTNET CHAINS AND TOKENS
 
 export const DESTINATION_CHAINS = [
   { id: optimismGoerli.id, name: "Optimism", icon: OPTIMISM },
