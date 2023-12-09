@@ -164,7 +164,7 @@ export default function UserInterface() {
         newStep: defaultTransferSteps.transferring,
       });
 
-      return;
+      // return;
 
       const transferTx = await transfer({
         smartWalletProvider: smartWalletProvider!,
@@ -173,6 +173,7 @@ export default function UserInterface() {
         recipientAddress: destinationAddress!,
         tokenAddress: sendTokenAddress,
         amount: Number(sendAmount),
+        minimumReceiveAmount: 2,
       });
 
       updateTransferSteps({ isPreviousStepCompleted: true });
