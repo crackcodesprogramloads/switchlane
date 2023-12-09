@@ -222,6 +222,7 @@ export default function UserInterface() {
 
       <form
         onSubmit={handleSubmit}
+        autoComplete="off"
         className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[63%] flex flex-col items-center gap-3"
       >
         <LazyMotion features={domAnimation}>
