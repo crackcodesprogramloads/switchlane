@@ -10,7 +10,6 @@ import {
 import { parseEther } from "viem/utils";
 
 import {
-  DUMMY_ERC20_TOKEN_ADDRESS,
   SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
   TO_TOKEN_OPTIONS,
 } from "@/app/constants";
@@ -113,11 +112,6 @@ export default function UserInterface() {
     handleTransferError,
   } = useTransferModal();
 
-  const [sendTokenAddress, setSendTokenAddress] = useState<`0x${string}`>(
-    DUMMY_ERC20_TOKEN_ADDRESS
-  );
-  const [receiveAmount, setReceiveAmount] = useState("");
-
   function validateFormInput() {
     // todo: validate form data
     if (!destinationAddress) {
@@ -130,6 +124,14 @@ export default function UserInterface() {
 
     if (!smartWalletProvider) {
       throw Error("Missing smart wallet provider");
+    }
+
+    if (!selectedFromTokenAddress) {
+      throw Error("Missing selected from token");
+    }
+
+    if (!selectedToTokenAddress) {
+      throw Error("Missing selected to token");
     }
   }
 
@@ -144,7 +146,7 @@ export default function UserInterface() {
     try {
       await approveTransaction({
         smartWalletProvider: smartWalletProvider!,
-        tokenAddress: sendTokenAddress,
+        tokenAddress: selectedFromTokenAddress! as `0x${string}`,
         amount: Number(parseEther(sendAmount)),
       });
 
@@ -157,7 +159,7 @@ export default function UserInterface() {
         smartWalletProvider: smartWalletProvider!,
         walletAddress: smartWalletAddress as `0x${string}`,
         spender: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
-        tokenAddress: sendTokenAddress,
+        tokenAddress: selectedFromTokenAddress! as `0x${string}`,
         amount: Number(sendAmount),
       });
 
@@ -166,16 +168,17 @@ export default function UserInterface() {
         newStep: defaultTransferSteps.transferring,
       });
 
-      // return;
-
       const transferTx = await transfer({
         smartWalletProvider: smartWalletProvider!,
-        walletAddress: smartWalletAddress,
-        destinationChainId: destinationChainId!,
-        recipientAddress: destinationAddress!,
-        tokenAddress: sendTokenAddress,
-        amount: Number(sendAmount),
-        minimumReceiveAmount: 2,
+        transferArgs: {
+          sender: smartWalletAddress,
+          receiver: destinationAddress!,
+          fromToken: selectedFromTokenAddress!,
+          toToken: selectedToTokenAddress!,
+          destinationChain: 16015286601757825753,
+          amount: Number(sendAmount),
+          minimumReceiveAmount: 2,
+        },
       });
 
       updateTransferSteps({ isPreviousStepCompleted: true });

@@ -33,16 +33,15 @@ function ContractProtocolFeeReader({
     destinationChain,
   ];
 
-  // console.log({ args });
-
   const { data, error, isLoading } = useContractRead({
-    // address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
-    address: "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
-    abi: contractABI as any,
+    // address: "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
+    address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
+    abi: contractABI,
     functionName: "calculateProtocolFees",
     args: args,
     enabled: args.every((arg) => Boolean(arg)),
   });
+
   if (isLoading)
     return (
       <Image

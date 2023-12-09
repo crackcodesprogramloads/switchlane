@@ -5,6 +5,8 @@ import { readContract } from "wagmi/actions";
 import type { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { Alchemy } from "alchemy-sdk";
 
+import SWITCHLANE_ABI from "../../abi/Switchlane.json";
+
 export async function approveTransaction({
   smartWalletProvider,
   tokenAddress,
@@ -23,6 +25,9 @@ export async function approveTransaction({
       args: [SWITCHLANE_TRANSFER_CONTRACT_ADDRESS, amount],
     }),
   });
+
+  console.log({ tokenAddress });
+  console.log({ amount });
 
   const txHash = await smartWalletProvider.waitForUserOperationTransaction(
     hash as `0x${string}`
@@ -51,6 +56,9 @@ export async function checkAllowance({
     args: [walletAddress, spender],
   });
 
+  console.log({ walletAddress });
+  console.log({ spender });
+
   const allowanceAmount = Number(formatEther(data as bigint));
 
   if (allowanceAmount !== amount) {
@@ -62,23 +70,29 @@ export async function checkAllowance({
 
 export async function transfer({
   smartWalletProvider,
-  walletAddress,
-  destinationChainId,
-  recipientAddress,
-  tokenAddress,
-  amount,
-  minimumReceiveAmount,
+  transferArgs: {
+    sender,
+    receiver,
+    fromToken,
+    toToken,
+    destinationChain,
+    amount,
+    minimumReceiveAmount,
+  },
 }: {
   smartWalletProvider: AlchemyProvider & Alchemy;
-  walletAddress: string;
-  destinationChainId: number;
-  recipientAddress: string;
-  tokenAddress: `0x${string}`;
-  amount: number;
-  minimumReceiveAmount: number;
+  transferArgs: {
+    sender: string;
+    receiver: string;
+    fromToken: string;
+    toToken: string;
+    destinationChain: number;
+    amount: number;
+    minimumReceiveAmount: number;
+  };
 }) {
   // function switchlaneExactInput(
-  //   address sender,
+  //   address sender, who?
   //   address receiver,
   //   address fromToken,
   //   address toToken,
@@ -86,18 +100,28 @@ export async function transfer({
   //   uint256 amount,
   //   uint256 minimumReceiveAmount
 
+  console.log({
+    sender,
+    receiver,
+    fromToken,
+    toToken,
+    destinationChain,
+    amount,
+    minimumReceiveAmount,
+  });
+
   const { hash } = await smartWalletProvider.sendUserOperation({
     target: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
     data: encodeFunctionData({
-      abi: ERC20Abi,
+      abi: SWITCHLANE_ABI,
       functionName: "switchlaneExactInput",
 
       args: [
-        walletAddress,
-        recipientAddress,
-        tokenAddress, // fromTokenAddress
-        tokenAddress, // toTokenAddress
-        destinationChainId, // toNetwork
+        sender,
+        receiver,
+        fromToken,
+        toToken,
+        destinationChain,
         amount,
         minimumReceiveAmount,
       ],
@@ -107,6 +131,7 @@ export async function transfer({
   const txHash = await smartWalletProvider.waitForUserOperationTransaction(
     hash as `0x${string}`
   );
+
   console.log({ txHash });
 
   return txHash;
