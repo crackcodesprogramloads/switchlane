@@ -36,7 +36,10 @@ export default function LoadingModal({
         <div className="flex flex-col gap-4">
           {transferSteps.map((step) => {
             return (
-              <div key={step.text} className="flex flex-row gap-4 items-center">
+              <div
+                key={step.text}
+                className="flex flex-row gap-4 items-center max-h-[70vh] overflow-y-auto"
+              >
                 <p className="text-lg">{step.text}</p>
                 {step.status === "processing" && (
                   <Image

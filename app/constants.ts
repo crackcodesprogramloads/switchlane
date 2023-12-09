@@ -11,11 +11,6 @@ import ETHEREUM from "/public/chains/RainbowIcons/Ethereum.svg";
 import BASE from "/public/chains/RainbowIcons/Base.svg";
 import TEST_TOKEN from "/public/tokens/TestToken.svg";
 
-export const MATIC_TOKEN_ADDRESS = "0x0000000000000000000000000000000000001010"; // MATIC, NOT WORKING!? ISN'T MATIC AN ERC20!?
-
-export const DUMMY_ERC20_TOKEN_ADDRESS =
-  "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1"; // DUMMY ERC20
-
 export const SWITCHLANE_TRANSFER_CONTRACT_ADDRESS =
   "0x0D0502489E7FA33aF1c8ed18D9053FB35c099d13";
 
@@ -30,7 +25,7 @@ export const DESTINATION_CHAINS = [
 
 export const TO_TOKEN_OPTIONS = [
   {
-    address: "0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05", // Sepolia
+    address: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40", // Mumbai
     name: "CCIP-BnM",
     icon: TEST_TOKEN,
   },
