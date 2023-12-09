@@ -67,6 +67,7 @@ export async function transfer({
   recipientAddress,
   tokenAddress,
   amount,
+  minimumReceiveAmount,
 }: {
   smartWalletProvider: AlchemyProvider & Alchemy;
   walletAddress: string;
@@ -74,6 +75,7 @@ export async function transfer({
   recipientAddress: string;
   tokenAddress: `0x${string}`;
   amount: number;
+  minimumReceiveAmount: number;
 }) {
   // function switchlaneExactInput(
   //   address sender,
@@ -97,7 +99,7 @@ export async function transfer({
         tokenAddress, // toTokenAddress
         destinationChainId, // toNetwork
         amount,
-        // minimumReceiveAmount
+        minimumReceiveAmount,
       ],
     }),
   });
@@ -105,6 +107,7 @@ export async function transfer({
   const txHash = await smartWalletProvider.waitForUserOperationTransaction(
     hash as `0x${string}`
   );
+  console.log({ txHash });
 
   return txHash;
 }
