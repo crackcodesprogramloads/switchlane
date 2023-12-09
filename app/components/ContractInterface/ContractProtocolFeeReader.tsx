@@ -33,11 +33,9 @@ function ContractProtocolFeeReader({
     destinationChain,
   ];
 
-  console.log({ args });
-
   const { data, error, isLoading } = useContractRead({
     address: "0xb80214f73b47D2E4ceda3600bD3c2c83365E8893", // todo: change to SWITCHLANE_TRANSFER_CONTRACT_ADDRESS
-    abi: contractABI.abi,
+    abi: contractABI,
     functionName: "calculateProtocolFees",
     args: args,
     enabled: args.every((arg) => Boolean(arg)),
