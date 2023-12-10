@@ -26,11 +26,11 @@ export async function approveTransaction({
     }),
   });
 
-  // const txHash = await smartWalletProvider.waitForUserOperationTransaction(
-  //   hash as `0x${string}`
-  // );
+  const txHash = await smartWalletProvider.waitForUserOperationTransaction(
+    hash as `0x${string}`
+  );
 
-  // console.log("Approval transaction hash", txHash);
+  console.log("Approval transaction hash", txHash);
 }
 
 export async function checkAllowance({
