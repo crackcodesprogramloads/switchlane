@@ -22,7 +22,7 @@ export default function AddressInput({
         transition={{
           type: "spring",
           damping: 20,
-          delay: 0.3,
+          delay: 0.6,
         }}
         className="py-2 px-1 w-[70%] text-zinc-200 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
       >

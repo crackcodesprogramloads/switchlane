@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { ConnectButton, useChainModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
-import ARBITRUM from "/public/chains/RainbowIcons/Arbitrum.svg";
+// import ARBITRUM from "/public/chains/RainbowIcons/Arbitrum.svg";
 
 function SendNetworkInput() {
   const { openChainModal } = useChainModal();
@@ -33,14 +33,13 @@ function SendNetworkInput() {
                 alt={chain.name ?? "Chain icon"}
                 src={chain.iconUrl}
               />
-            ) : (
-              <Image
-                width={35}
-                height={35}
-                alt="Arbitrum icon"
-                src={ARBITRUM}
-              />
-            );
+            ) : null;
+          // <Image
+          //   width={35}
+          //   height={35}
+          //   alt="Arbitrum icon"
+          //   src={ARBITRUM}
+          // />
 
           return (
             <span className="w-full h-full flex flex-row items-center justify-center gap-4 text-3xl font-light cursor-pointer">
