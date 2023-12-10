@@ -104,6 +104,7 @@ function SelectToken({
           className="w-full h-full flex flex-row items-center justify-center gap-4"
         >
           <Image
+            priority
             src={selectedToken.icon}
             alt="token icon"
             width={35}
