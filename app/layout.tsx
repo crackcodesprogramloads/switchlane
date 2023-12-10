@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 import WagmiProvider from "./components/Navbar/Wallet/WagmiProvider";
 import AAWalletProvider from "./components/Navbar/Wallet/AAWalletProvider";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             {children}
           </AAWalletProvider>
         </WagmiProvider>
+        <Footer />
       </body>
     </html>
   );

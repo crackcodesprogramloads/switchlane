@@ -16,7 +16,7 @@ import { Alchemy } from "alchemy-sdk";
 import { Address } from "viem";
 import type { Chain } from "viem";
 import { chainConfig } from "@/app/services/AlchemyAA/chainConfig";
-import { arbitrumSepolia, sepolia } from "viem/chains";
+import { sepolia } from "viem/chains";
 
 export const useAlchemyProvider = ({ chain }: { chain: Chain | undefined }) => {
   const [provider, setProvider] = useState<(AlchemyProvider & Alchemy) | null>(

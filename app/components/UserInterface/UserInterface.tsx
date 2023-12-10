@@ -230,7 +230,7 @@ export default function UserInterface() {
             <m.div
               initial={{ y: "500%", opacity: 0.1 }}
               animate={{ y: "0", opacity: 1 }}
-              transition={{ type: "spring", damping: 20, delay: 0 }}
+              transition={{ type: "spring", damping: 20, delay: 0.3 }}
               className="w-full h-[50%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
               <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
@@ -264,7 +264,7 @@ export default function UserInterface() {
               transition={{
                 type: "spring",
                 damping: 20,
-                delay: 0.15,
+                delay: 0.45,
               }}
               className="relative w-[85%] h-[40%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
@@ -312,7 +312,7 @@ export default function UserInterface() {
             transition={{
               type: "spring",
               damping: 20,
-              delay: 0.45,
+              delay: 0.75,
             }}
             className="w-[55%] py-4 px-8 text-xl text-zinc-200 hover:text-zinc-50 font-semibold rounded-lg border-l border-t border-gray-400 hover:border-gray-300 shadow-[0px_0px_50px] shadow-sky-700/70 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-700"
           >
