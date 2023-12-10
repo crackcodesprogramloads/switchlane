@@ -28,7 +28,7 @@ export const DESTINATION_CHAINS = [
 export const TO_TOKEN_OPTIONS = [
   {
     address: "0xf1E3A5842EeEF51F2967b3F05D45DD4f4205FF40", // Mumbai
-    name: "CCIP-BnM",
+    name: "CCIP",
     icon: TEST_TOKEN,
   },
 ];
