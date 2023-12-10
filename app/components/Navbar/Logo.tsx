@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import LOGO from "/public/logo.svg";
+import LOGO from "public/logo.svg";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 export default function Logo() {
