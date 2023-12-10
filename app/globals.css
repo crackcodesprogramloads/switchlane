@@ -16,4 +16,8 @@
   html::-webkit-scrollbar {
     display: none;
   }
+
+  a {
+    @apply cursor-pointer;
+  }
 }

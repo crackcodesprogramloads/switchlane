@@ -7,6 +7,7 @@ import { m, LazyMotion, domAnimation } from "framer-motion";
 
 import CLOSE_ICON from "/public/close.svg";
 import PROCESSING from "/public/processing.svg";
+import { useAccount } from "wagmi";
 
 export type TokenOption = {
   address: string;
@@ -89,12 +90,14 @@ function SelectToken({
   token?: string;
   onClick: () => void;
 }) {
+  const { isConnected } = useAccount();
+
   const selectedToken = tokenOptions.find((c) => c.name === token);
 
   return (
     <fieldset className="w-full h-[68px] flex items-center justify-center text-zinc-200 border-dashed border-t border-gray-600">
       <legend className="ml-auto mr-auto px-2 text-lg">{title}</legend>
-      {selectedToken ? (
+      {selectedToken && (
         <button
           type="button"
           onClick={onClick}
@@ -108,7 +111,8 @@ function SelectToken({
           />
           <p className="text-[28px] font-light">{selectedToken.name}</p>
         </button>
-      ) : (
+      )}
+      {isConnected && !selectedToken ? (
         <Image
           className="animate-spin"
           src={PROCESSING}
@@ -116,7 +120,7 @@ function SelectToken({
           width={28}
           height={28}
         />
-      )}
+      ) : null}
     </fieldset>
   );
 }

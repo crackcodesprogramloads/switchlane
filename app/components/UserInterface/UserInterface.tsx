@@ -182,7 +182,28 @@ export default function UserInterface() {
         },
       });
 
-      updateTransferSteps({ isPreviousStepCompleted: true });
+      updateTransferSteps({
+        isPreviousStepCompleted: true,
+        newStep: (
+          <div className="w-full">
+            <p>Transaction submitted.</p>
+            <div className="w-full flex flex-row justify-between gap-4">
+              <p>Transaction Hash: </p>
+              <a
+                className="cursor-pointer text-blue-400 underline"
+                href={`https://mumbai.polygonscan.com/tx/${transferTx}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Block Explorer
+              </a>
+            </div>
+          </div>
+        ),
+      });
+      updateTransferSteps({
+        isPreviousStepCompleted: true,
+      });
     } catch (error: any) {
       handleTransferError(error);
     }
@@ -223,7 +244,7 @@ export default function UserInterface() {
       <form
         onSubmit={handleSubmit}
         autoComplete="off"
-        className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[63%] flex flex-col items-center gap-3"
+        className="relative w-[80%] md:w-[50%] lg:w-[45%] xl:w-[42%] h-[64%] flex flex-col items-center gap-3"
       >
         <LazyMotion features={domAnimation}>
           <div className="flex flex-col items-center w-full h-full gap-2">
@@ -233,7 +254,7 @@ export default function UserInterface() {
               transition={{ type: "spring", damping: 20, delay: 0.3 }}
               className="w-full h-[50%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-4">
                 <SendInput
                   smartWalletAddress={smartWalletAddress}
                   fromTokenAddress={selectedFromTokenAddress}
@@ -248,7 +269,7 @@ export default function UserInterface() {
                   destinationChain={destinationChainId}
                 />
               </div>
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-4">
                 <SelectToken
                   title="From Token"
                   tokenOptions={fromTokenOptions}
@@ -266,9 +287,9 @@ export default function UserInterface() {
                 damping: 20,
                 delay: 0.45,
               }}
-              className="relative w-[85%] h-[40%] px-12 flex flex-row items-center justify-center gap-12 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
+              className="relative w-[85%] h-[40%] px-10 flex flex-row items-center justify-center gap-10 border-l border-t border-gray-600 hover:border-gray-400 rounded-lg shadow-[0px_0px_50px] shadow-sky-700/70"
             >
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-4">
                 <ReceiveInput
                   fromToken={selectedFromTokenAddress}
                   toToken={selectedToTokenAddress}
@@ -278,7 +299,7 @@ export default function UserInterface() {
                 />
                 <TempInput />
               </div>
-              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-6">
+              <div className="flex flex-col items-center justify-center w-1/2 h-full gap-3 py-4">
                 <SelectToken
                   title="To Token"
                   tokenOptions={TO_TOKEN_OPTIONS}

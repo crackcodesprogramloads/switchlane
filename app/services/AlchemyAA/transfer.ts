@@ -26,11 +26,11 @@ export async function approveTransaction({
     }),
   });
 
-  const txHash = await smartWalletProvider.waitForUserOperationTransaction(
-    hash as `0x${string}`
-  );
+  // const txHash = await smartWalletProvider.waitForUserOperationTransaction(
+  //   hash as `0x${string}`
+  // );
 
-  return txHash;
+  // console.log("Approval transaction hash", txHash);
 }
 
 export async function checkAllowance({
@@ -94,8 +94,6 @@ export async function transfer({
     fromAmount,
     maxTolerance,
   });
-
-  return;
 
   const minimumReceiveAmount = await readContract({
     address: SWITCHLANE_TRANSFER_CONTRACT_ADDRESS,
