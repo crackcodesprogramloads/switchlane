@@ -36,7 +36,6 @@ import useTransferModal from "@/app/hooks/transferForm/useTransferModal";
 import useTokenBalances from "@/app/hooks/useTokenBalances";
 import useTokenMetadata from "@/app/hooks/useTokenMetadata";
 
-import ContractProtocolFeeReader from "../ContractInterface/ContractProtocolFeeReader";
 import TempInput from "./Inputs/TempInput";
 
 export default function UserInterface() {
