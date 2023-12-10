@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
-export type TransferStep = { status: string; text: string };
+export type TransferStep = { status: string; text: ReactNode };
 
 export default function useTransferModal() {
   const defaultTransferSteps = {
     signApproval: "Please sign approval for our contract to send your tokens.",
     receivedSignature: "Signature received, checking allowance.",
-    transferring: "Transferring funds...",
+    transferring: "Please sign to confirm transfer.",
+    waitingOnTxHash: "Waiting for transaction hash.",
   };
 
   const [transferSteps, setTransferSteps] = useState<TransferStep[]>([]);
@@ -26,7 +27,7 @@ export default function useTransferModal() {
     newStep,
   }: {
     isPreviousStepCompleted?: boolean;
-    newStep?: string;
+    newStep?: ReactNode;
   }) {
     setTransferSteps((prev) => {
       if (isPreviousStepCompleted && prev[prev.length - 1]?.status) {
@@ -51,7 +52,7 @@ export default function useTransferModal() {
       prev[prev.length - 1].status = "error";
       let customErrorMessage = error.message;
 
-      if (error.message.includes("user rejected signing")) {
+      if (error.message.includes("User rejected signing")) {
         customErrorMessage = "User rejected approval to spend tokens.";
         // todo: check error handling for coin transfer
       }

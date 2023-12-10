@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import LogoIcon from "/public/Logo.svg";
+import LogoIcon from "/public/logo.svg";
 import { m, LazyMotion, domAnimation } from "framer-motion";
 
 export default function Logo() {
@@ -15,17 +15,9 @@ export default function Logo() {
           damping: 20,
           delay: 0,
         }}
-        className="flex flex-row items-end"
+        className="flex flex-row items-end gap-4"
       >
-        <Image priority src={LogoIcon} alt="logo" width={40} height={40} />
-        <Image
-          priority
-          className="translate-y-2 -translate-x-5 transform -scale-x-100"
-          src={LogoIcon}
-          alt="logo"
-          width={40}
-          height={40}
-        />
+        <Image priority src={LogoIcon} alt="logo" width={45} height={45} />
         <a className="text-zinc-200 text-3xl font-semibold" href="/">
           Switchlane
         </a>

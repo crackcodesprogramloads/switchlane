@@ -34,10 +34,10 @@ export default function LoadingModal({
           Time estimate: 2 - 3 minutes, please do not close the window.
         </p>
         <div className="flex flex-col gap-4">
-          {transferSteps.map((step) => {
+          {transferSteps.map((step, index) => {
             return (
               <div
-                key={step.text}
+                key={index}
                 className="flex flex-row gap-4 items-center max-h-[70vh] overflow-y-auto"
               >
                 <p className="text-lg">{step.text}</p>
@@ -74,15 +74,4 @@ export default function LoadingModal({
       </div>
     </div>
   ) : null;
-}
-
-{
-  /* {chain?.blockExplorers?.default.url && (
-            <a
-              href={`${chain?.blockExplorers?.default.url}/address/${address}#tokentxnsErc721`}
-              target="_blank"
-            >
-              Block Explorer
-            </a>
-          )} */
 }

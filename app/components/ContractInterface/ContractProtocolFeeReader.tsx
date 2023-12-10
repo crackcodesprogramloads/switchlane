@@ -60,9 +60,9 @@ function ContractProtocolFeeReader({
     const truncatedEtherValue = removeExcessDigitsFromString(etherValue);
 
     return (
-      <div className="h-full flex flex-col items-center text-[18px]">
-        <p>Sponsored gas fee</p>
-        <p>~{truncatedEtherValue} USD</p>
+      <div className="w-full h-full flex flex-col items-center text-[16px]">
+        <p>Sponsored gas ~{truncatedEtherValue} USD</p>
+        <p>Max slippage - 0.5%</p>
       </div>
     );
   }
