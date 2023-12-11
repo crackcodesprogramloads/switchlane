@@ -40,7 +40,7 @@ export default function SendInput({
           type="button"
           disabled={isError || isLoading}
           onClick={handleMaxAmount}
-          className="w-1/4 h-3/4 px-auto py-auto text-zinc-200 text-md border rounded-lg"
+          className="hidden sm:flex items-center justify-center w-16 h-8 px-auto py-auto text-zinc-200 text-md border rounded-lg"
         >
           Max
         </button>

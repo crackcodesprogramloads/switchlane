@@ -11,13 +11,14 @@ import { useCopyToClipboard } from "@/app/hooks/useCopyToClipboard";
 import useTokenBalances from "@/app/hooks/useTokenBalances";
 
 import CLIPBOARD from "/public/clipboard.svg";
+import WALLET from "/public/wallet.svg";
 import { AAWalletProviderContext } from "./AAWalletProvider";
 
 export default function AAWalletButton() {
   const [smartWalletOpen, setSmartWalletOpen] = useState(false);
   const { smartWalletAddress } = useContext(AAWalletProviderContext);
 
-  const [, copy] = useCopyToClipboard();
+  const [value, copy] = useCopyToClipboard();
 
   const firstSectionAddress = smartWalletAddress.slice(0, 7);
   const secondSectionAddress = smartWalletAddress.slice(37, 42);
@@ -70,13 +71,27 @@ export default function AAWalletButton() {
                       return null;
                     }
                     return (
-                      <button
-                        onClick={handleSmartWalletOpen}
-                        type="button"
-                        className="py-2 px-4 border-[1.5px] border-zinc-200 rounded-full flex flex-row items-center font-normal"
-                      >
-                        Smart Wallet
-                      </button>
+                      <>
+                        <button
+                          onClick={handleSmartWalletOpen}
+                          type="button"
+                          className="hidden py-2 px-4 sm:border-[1.5px] border-zinc-200 rounded-full sm:flex flex-row items-center font-normal"
+                        >
+                          Smart Wallet
+                        </button>
+                        <button
+                          onClick={handleSmartWalletOpen}
+                          type="button"
+                          className="flex sm:border-[1.5px] border-zinc-200 rounded-full sm:hidden flex-row items-center font-normal"
+                        >
+                          <Image
+                            src={WALLET}
+                            alt="wallet icon"
+                            width={30}
+                            height={30}
+                          />
+                        </button>
+                      </>
                     );
                   })()}
                 </div>
@@ -102,7 +117,7 @@ export default function AAWalletButton() {
               </p>
               <Image
                 onClick={() => copy(smartWalletAddress)}
-                className="cursor-pointer active:scale-[0.1]"
+                className="cursor-pointer"
                 src={CLIPBOARD}
                 alt="clipboard icon"
                 width={20}
