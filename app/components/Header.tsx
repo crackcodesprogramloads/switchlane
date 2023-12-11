@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <LazyMotion features={domAnimation}>
       <m.h1
-        className="text-2xl font-light text-zinc-200 uppercase"
+        className="text-md sm:text-2xl font-medium sm:font-light text-zinc-200 uppercase"
         initial={{ y: "-500%", opacity: 0.1 }}
         animate={{ y: "0", opacity: 1 }}
         transition={{

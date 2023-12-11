@@ -17,8 +17,19 @@ export default function Logo() {
         }}
         className="flex flex-row items-center gap-4"
       >
-        <Image priority src={LOGO} alt="logo" width={50} height={50} />
-        <a className="text-zinc-200 text-3xl font-semibold" href="/">
+        <Image
+          priority
+          className="scale-75 sm:scale-100"
+          src={LOGO}
+          alt="logo"
+          width={50}
+          height={50}
+        />
+
+        <a
+          className="hidden md:flex text-zinc-200 text-3xl font-semibold"
+          href="/"
+        >
           Switchlane
         </a>
       </m.div>

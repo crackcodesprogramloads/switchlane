@@ -45,25 +45,17 @@ export default function WalletButton() {
                   );
                 }
                 return (
-                  <div className="flex gap-12">
+                  <div className="flex flex-row gap-2 md:gap-12">
                     <button
-                      className="py-2 px-4 border-[1.5px] border-zinc-200 rounded-full flex flex-row items-center font-normal"
+                      className="sm:py-2 sm:px-4 sm:border-[1.5px] border-zinc-200 rounded-full flex flex-row items-center font-normal"
                       onClick={openChainModal}
                       type="button"
                     >
                       {chain.hasIcon && (
-                        <div
-                          style={{
-                            background: chain.iconBackground,
-                            width: 25,
-                            height: 25,
-                            borderRadius: 999,
-                            overflow: "hidden",
-                            marginRight: 4,
-                          }}
-                        >
+                        <div className="mr-2">
                           {chain.iconUrl && (
                             <Image
+                              className="scale-125 sm:scale-100"
                               alt={chain.name ?? "Chain icon"}
                               src={chain.iconUrl}
                               width={25}
@@ -72,7 +64,7 @@ export default function WalletButton() {
                           )}
                         </div>
                       )}
-                      {chain.name}
+                      <div className="hidden sm:flex">{chain.name}</div>
                     </button>
                   </div>
                 );

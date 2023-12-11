@@ -18,7 +18,7 @@ export default function LoadingModal({
 }) {
   return openModal ? (
     <div className="z-50 fixed w-full h-full bg-gray-950/70 backdrop-blur-sm">
-      <div className="z-50 fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-1/2 px-10 py-14 flex flex-col items-center justify-center gap-4 border-l border-t border-gray-600 rounded-lg bg-gray-950">
+      <div className="z-50 fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[92%] sm:w-1/2 px-10 py-14 flex flex-col items-center justify-center gap-4 border-l border-t border-gray-600 rounded-lg bg-gray-950">
         {transferSteps.length >= 3 ||
         transferSteps.some((s) => s.status === "error") ? (
           <div

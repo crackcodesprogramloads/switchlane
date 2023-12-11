@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <LazyMotion features={domAnimation}>
       <m.div
-        className="fixed bottom-0 w-screen h-14 px-16 flex flex-row items-center justify-between"
+        className="fixed bottom-0 w-screen h-14 px-6 sm:px-12 py-4 sm:py-6 flex flex-row items-center justify-between"
         initial={{ y: "200%", opacity: 0.1 }}
         animate={{ y: "0", opacity: 1 }}
         transition={{
